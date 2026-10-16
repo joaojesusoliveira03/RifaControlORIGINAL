@@ -1,0 +1,633 @@
+/* ============================================================
+   desktop.css — layout responsivo para telas grandes
+   Mobile continua 100% intacto (nada aqui afeta < 900px)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   SIDEBAR — escondida por padrão (mobile)
+   ------------------------------------------------------------ */
+.sidebar {
+  display: none;
+}
+
+/* ------------------------------------------------------------
+   A partir de 900px: layout com sidebar + conteúdo
+   ------------------------------------------------------------ */
+@media (min-width: 900px) {
+
+  /* ============================================================
+     FUNDO E ESTRUTURA GERAL
+     ============================================================ */
+
+  body {
+    background: #eef1f7;
+    display: block;
+    padding: 0;
+    position: static;
+    overflow: hidden;
+  }
+
+  body.dark {
+    background: #05070d;
+  }
+
+  /* O .app vira um grid: sidebar à esquerda, resto à direita */
+  .app {
+    display: flex;
+    flex-direction: row;
+    height: 100dvh;
+    max-height: none;
+    max-width: none;
+    width: 100%;
+    border-radius: 0;
+    overflow: hidden;
+    background: var(--bg);
+    box-shadow: none;
+    padding: 0;
+    position: relative;
+    margin: 0;
+  }
+
+  /* ============================================================
+     SIDEBAR
+     ============================================================ */
+
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    padding: 20px 12px;
+    transition: background .2s ease, border-color .2s ease;
+    z-index: 10;
+  }
+
+  /* Header da sidebar (logo + email) */
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 10px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  .sidebar-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 184, 148, .25);
+  }
+
+  .sidebar-brand {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .sidebar-brand h1 {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -.3px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .sidebar-brand p {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  /* Navegação */
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background .15s ease, color .15s ease;
+    letter-spacing: -.2px;
+  }
+
+  .sidebar-item svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    flex-shrink: 0;
+    transition: transform .15s ease;
+  }
+
+  .sidebar-item span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-item:hover {
+    background: var(--bg2);
+    color: var(--text);
+  }
+
+  .sidebar-item:hover svg {
+    transform: scale(1.05);
+  }
+
+  .sidebar-item.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 184, 148, .25);
+  }
+
+  .sidebar-item.active:hover {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  }
+
+  /* Footer da sidebar (user + logout) */
+  .sidebar-footer {
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+    border-radius: 12px;
+    transition: background .15s ease;
+  }
+
+  .sidebar-user:hover {
+    background: var(--bg2);
+  }
+
+  .sidebar-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .sidebar-user-info {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .sidebar-user-info h5 {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sidebar-user-info p {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+
+  .sidebar-logout {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    background: var(--bg2);
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background .15s ease, color .15s ease;
+  }
+
+  .sidebar-logout svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  .sidebar-logout:hover {
+    background: #ffe5e5;
+    color: var(--danger);
+  }
+
+  body.dark .sidebar-logout:hover {
+    background: #450a0a;
+    color: #fca5a5;
+  }
+
+  /* ============================================================
+     ÁREA DAS TELAS
+     ============================================================ */
+
+  .screens {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .screen {
+    background: var(--bg);
+  }
+
+  /* ------------------------------------------------------------
+     HEADER do desktop: mais fino, sem os 70px extras
+     ------------------------------------------------------------ */
+
+  .header {
+    padding: 24px 32px 24px;
+    border-radius: 0;
+    box-shadow: none;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header da home não precisa de "stats floating" colados */
+  .stats-floating {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+    left: auto;
+    right: auto;
+    bottom: auto;
+  }
+
+  .stat-card {
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, .1);
+    box-shadow: none;
+    color: #fff;
+    cursor: default;
+  }
+
+  .stat-card .stat-label {
+    color: rgba(255, 255, 255, .8);
+    font-size: 10px;
+  }
+
+  .stat-card .stat-value {
+    color: #fff;
+    font-size: 22px;
+  }
+
+  .stat-card .stat-sub {
+    color: rgba(255, 255, 255, .7);
+  }
+
+  .stat-card .stat-icon {
+    background: rgba(255, 255, 255, .2) !important;
+    color: #fff;
+  }
+
+  .stat-card:active {
+    transform: none;
+  }
+
+  /* Greeting e títulos */
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .header .sub {
+    font-size: 13px;
+  }
+
+  /* Sync status: reposiciona no canto */
+  .sync-status {
+    top: 24px;
+    right: 32px;
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+
+  /* ------------------------------------------------------------
+     CONTEÚDO
+     ------------------------------------------------------------ */
+
+  .content {
+    padding: 28px 32px 40px;
+    overscroll-behavior: contain;
+    max-width: 1400px;
+  }
+
+  .content.with-stats {
+    padding-top: 28px;
+  }
+
+  /* ------------------------------------------------------------
+     BOTTOM NAV: escondido no desktop
+     ------------------------------------------------------------ */
+
+  .bottom-nav {
+    display: none !important;
+  }
+
+  /* ------------------------------------------------------------
+     GRID DE RIFAS: 2-3 colunas
+     ------------------------------------------------------------ */
+
+  #home-rifas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Os títulos de seção ocupam a linha toda */
+  #home-rifas > .section-title {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  #home-rifas > .swipe-wrap {
+    margin-bottom: 0;
+  }
+
+  /* ------------------------------------------------------------
+     BOTÃO "NOVA RIFA" e BUSCA lado a lado
+     ------------------------------------------------------------ */
+
+  .new-rifa-btn {
+    max-width: 240px;
+    margin-bottom: 16px;
+    padding: 13px 20px;
+    font-size: 14px;
+  }
+
+  .search-wrap {
+    max-width: 500px;
+    margin-bottom: 20px;
+  }
+
+  /* ------------------------------------------------------------
+     CARDS de rifa no desktop
+     ------------------------------------------------------------ */
+
+  .rifa-card {
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  .rifa-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(10, 12, 20, .1);
+  }
+
+  body.dark .rifa-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+  }
+
+  /* Card image no desktop fica mais alto */
+  .card-image {
+    height: 140px;
+  }
+
+  /* ------------------------------------------------------------
+     MODAIS: caixinha flutuante no centro
+     ------------------------------------------------------------ */
+
+  .modal-overlay {
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 12, 20, .5);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal {
+    border-radius: 24px;
+    max-width: 480px;
+    width: 100%;
+    max-height: calc(100dvh - 48px);
+    padding: 24px 28px 28px;
+    animation: popIn .25s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-handle {
+    display: none;
+  }
+
+  .confirm-modal {
+    max-width: 400px;
+  }
+
+  .sort-modal,
+  .list-modal {
+    border-radius: 24px;
+    max-width: 480px;
+    width: 100%;
+    max-height: calc(100dvh - 48px);
+    padding: 24px 28px 28px;
+    animation: popIn .25s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .list-modal .modal-handle,
+  .sort-modal .modal-handle {
+    display: none;
+  }
+
+  /* ------------------------------------------------------------
+     GRID DE NÚMEROS: mais colunas no desktop
+     ------------------------------------------------------------ */
+
+  .numbers-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    max-width: 900px;
+  }
+
+  .num-cell {
+    border-radius: 10px;
+    font-size: 13px;
+  }
+
+  /* ------------------------------------------------------------
+     TABS da rifa: mais espaçadas
+     ------------------------------------------------------------ */
+
+  .tabs {
+    padding: 20px 32px 4px;
+    gap: 8px;
+    max-width: 600px;
+  }
+
+  .tab {
+    padding: 11px 16px;
+    font-size: 13px;
+  }
+
+  /* ------------------------------------------------------------
+     FAB: reposiciona pro canto inferior direito
+     ------------------------------------------------------------ */
+
+  .fab {
+    bottom: 32px;
+    right: 32px;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+  }
+
+  /* ------------------------------------------------------------
+     RELATÓRIOS: cards maiores no desktop
+     ------------------------------------------------------------ */
+
+  #report-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 1000px;
+  }
+
+  #report-content .report-card {
+    margin-bottom: 0;
+  }
+
+  #report-content > .empty {
+    grid-column: 1 / -1;
+  }
+
+  /* Cards de ranking ocupam 2 colunas */
+  #report-content .report-card:has(.ranking-item) {
+    grid-column: 1 / -1;
+  }
+
+  /* ------------------------------------------------------------
+     AJUSTES: 2 colunas
+     ------------------------------------------------------------ */
+
+  #screen-settings .content {
+    max-width: 1000px;
+  }
+
+  #screen-settings .settings-group {
+    max-width: 100%;
+  }
+
+  /* ------------------------------------------------------------
+     BUYER: mais respiro
+     ------------------------------------------------------------ */
+
+  #buyer-content {
+    max-width: 800px;
+  }
+
+  /* ------------------------------------------------------------
+     TOAST: canto inferior direito
+     ------------------------------------------------------------ */
+
+  .toast {
+    bottom: 32px;
+    left: auto;
+    right: 32px;
+    transform: translateX(0) translateY(20px);
+    max-width: 380px;
+  }
+
+  .toast.show {
+    transform: translateX(0) translateY(0);
+  }
+
+  /* ------------------------------------------------------------
+     COMPRADORES: 2 colunas na tab de rifa
+     ------------------------------------------------------------ */
+
+  #rifa-content .buyer-card {
+    max-width: 100%;
+  }
+
+}
+
+/* ------------------------------------------------------------
+   TELAS MUITO GRANDES (>= 1400px)
+   ------------------------------------------------------------ */
+@media (min-width: 1400px) {
+
+  .sidebar {
+    width: 280px;
+  }
+
+  #home-rifas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .numbers-grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  #report-content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  #report-content .report-card:has(.ranking-item) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ------------------------------------------------------------
+   MOBILE: nada disso vale (abaixo de 900px)
+   ------------------------------------------------------------ */
+@media (max-width: 899px) {
+  .sidebar {
+    display: none !important;
+  }
+}

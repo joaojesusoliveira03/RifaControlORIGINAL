@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RifaControl">
+<meta name="application-name" content="RifaControl">
+<meta name="theme-color" content="#00b894">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="Controle suas rifas com sincronização em tempo real">
+
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2300b894'/><text x='50' y='72' font-size='60' text-anchor='middle' fill='white'>🎟️</text></svg>">
+
+<link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/desktop.css">
+
+<title>RifaControl 🎟️</title>
+</head>
+<body>
+
+<!-- ============================================================
+     AUTH SCREEN
+     ============================================================ -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-logo">🎟️</div>
+  <h1 class="auth-title">RifaControl</h1>
+  <p class="auth-subtitle">Suas rifas na nuvem, compartilhadas</p>
+
+  <div class="auth-card">
+    <!-- LOGIN / SIGNUP -->
+    <div id="auth-view-login">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Criar conta</button>
+      </div>
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="in-auth-email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Senha</label>
+        <input type="password" id="in-auth-pass" placeholder="Mínimo 6 caracteres" autocomplete="current-password">
+      </div>
+      <div class="auth-field hidden" id="field-name">
+        <label>Seu nome</label>
+        <input type="text" id="in-auth-name" placeholder="Ex: João Silva" autocomplete="name" maxlength="40">
+      </div>
+      <button class="auth-btn" id="btn-auth" onclick="handleAuth()">Entrar</button>
+      <button class="auth-link" onclick="showForgotPassword()">Esqueci minha senha</button>
+      <div class="auth-message" id="auth-msg"></div>
+    </div>
+
+    <!-- FORGOT -->
+    <div id="auth-view-forgot" class="hidden">
+      <h2 style="font-size:20px;font-weight:800;text-align:center;margin-bottom:6px;">Esqueci minha senha</h2>
+      <p style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.5;">
+        Digite seu email e enviaremos um link pra você criar uma nova senha.
+      </p>
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="in-forgot-email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <button class="auth-btn" id="btn-forgot" onclick="sendForgotPassword()">Enviar link</button>
+      <button class="auth-back" onclick="backToLogin()">← Voltar pro login</button>
+      <div class="auth-message" id="forgot-msg"></div>
+    </div>
+
+    <!-- RESET -->
+    <div id="auth-view-reset" class="hidden">
+      <h2 style="font-size:20px;font-weight:800;text-align:center;margin-bottom:6px;">Defina sua nova senha</h2>
+      <p style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.5;">
+        Sua conta foi verificada! Agora defina uma nova senha.
+      </p>
+      <div class="auth-field">
+        <label>Nova senha</label>
+        <input type="password" id="in-reset-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+      </div>
+      <div class="auth-field">
+        <label>Confirme a nova senha</label>
+        <input type="password" id="in-reset-pass2" placeholder="Digite de novo" autocomplete="new-password">
+      </div>
+      <button class="auth-btn" id="btn-reset" onclick="updatePassword()">Salvar nova senha</button>
+      <div class="auth-message" id="reset-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP
+     ============================================================ -->
+<div class="app hidden" id="app">
+
+  <!-- ============================================================
+       SIDEBAR (visível só no desktop, escondida via CSS no mobile)
+       ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">🎟️</div>
+      <div class="sidebar-brand">
+        <h1>RifaControl</h1>
+        <p id="sidebar-user-email">carregando...</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" data-screen="home" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24"><path d="M20 12c0-1.1.9-2 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2Z"/></svg>
+        <span>Minhas Rifas</span>
+      </button>
+      <button class="sidebar-item" data-screen="sorteio" onclick="showScreen('sorteio')">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2ZM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18Zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6 18 6.67 18 7.5 17.33 9 16.5 9Z"/></svg>
+        <span>Sortear</span>
+      </button>
+      <button class="sidebar-item" data-screen="reports" onclick="showScreen('reports')">
+        <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8zM2 20h20v2H2z"/></svg>
+        <span>Relatórios</span>
+      </button>
+      <button class="sidebar-item" data-screen="settings" onclick="showScreen('settings')">
+        <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/></svg>
+        <span>Ajustes</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebar-user-avatar">👤</div>
+        <div class="sidebar-user-info">
+          <h5 id="sidebar-user-name">Carregando...</h5>
+          <p id="sidebar-user-email-footer">-</p>
+        </div>
+      </div>
+      <button class="sidebar-logout" onclick="signOut()" title="Sair">
+        <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       TELAS
+       ============================================================ -->
+  <div class="screens">
+
+    <!-- ========== HOME ========== -->
+    <div class="screen active" id="screen-home">
+      <div class="header">
+        <div class="header-content">
+          <div class="header-top">
+            <div class="header-brand">
+              <div class="header-logo">🎟️</div>
+              <div>
+                <h1>RifaControl</h1>
+                <div class="sub" id="home-greeting">Bom dia!</div>
+              </div>
+            </div>
+            <div class="header-actions">
+              <button class="icon-btn" onclick="showScreen('reports')">
+                <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8zM2 20h20v2H2z"/></svg>
+              </button>
+              <button class="icon-btn" onclick="showScreen('settings')">
+                <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="sync-status" id="sync-status">
+          <span class="sync-dot"></span>
+          <span id="sync-text">Sincronizado</span>
+        </div>
+        <div class="stats-floating" id="stats-grid"></div>
+      </div>
+      <div class="content with-stats">
+        <button class="new-rifa-btn" onclick="openRifaModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg>
+          <span>Nova Rifa</span>
+        </button>
+        <div class="search-wrap">
+          <div class="search-box">
+            <svg class="s-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5Zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z"/></svg>
+            <input type="text" id="search-input" placeholder="Buscar..." autocomplete="off">
+            <button class="clear-btn" id="clear-search" onclick="clearSearch()">✕</button>
+          </div>
+        </div>
+        <div id="home-rifas"></div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-item active" onclick="showScreen('home')">
+          <svg viewBox="0 0 24 24"><path d="M20 12c0-1.1.9-2 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2Z"/></svg>
+          Rifas
+        </button>
+        <button class="nav-item" onclick="showScreen('sorteio')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2ZM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18Zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6 18 6.67 18 7.5 17.33 9 16.5 9Z"/></svg>
+          Sortear
+        </button>
+        <button class="nav-item" onclick="showScreen('settings')">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/></svg>
+          Ajustes
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== RIFA ========== -->
+    <div class="screen" id="screen-rifa">
+      <div class="header" id="rifa-header">
+        <div class="header-content">
+          <button class="back-btn" onclick="showScreen('home')">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z"/></svg>
+          </button>
+          <h1 id="rifa-title">Rifa</h1>
+          <div class="sub" id="rifa-info"></div>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" id="tab-numbers" onclick="switchTabRifa('numbers')">🎯 Números</button>
+        <button class="tab" id="tab-sales" onclick="switchTabRifa('sales')">👥 Compradores</button>
+        <button class="tab" id="tab-info" onclick="switchTabRifa('info')">ℹ️ Info</button>
+      </div>
+      <div class="content" id="rifa-content"></div>
+      <button class="fab" id="fab-rifa" onclick="openSaleModal()">
+        <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2Z"/></svg>
+      </button>
+    </div>
+
+    <!-- ========== SORTEIO ========== -->
+    <div class="screen" id="screen-sorteio">
+      <div class="header">
+        <div class="header-content">
+          <div class="header-brand">
+            <div class="header-logo">🎲</div>
+            <div><h1>Sortear</h1><div class="sub">Escolha uma rifa</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content"><div id="sorteio-list"></div></div>
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('home')">
+          <svg viewBox="0 0 24 24"><path d="M20 12c0-1.1.9-2 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2Z"/></svg>
+          Rifas
+        </button>
+        <button class="nav-item active" onclick="showScreen('sorteio')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2ZM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18Zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6 18 6.67 18 7.5 17.33 9 16.5 9Z"/></svg>
+          Sortear
+        </button>
+        <button class="nav-item" onclick="showScreen('settings')">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/></svg>
+          Ajustes
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== RELATÓRIOS ========== -->
+    <div class="screen" id="screen-reports">
+      <div class="header">
+        <div class="header-content">
+          <button class="back-btn" onclick="showScreen('home')">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z"/></svg>
+          </button>
+          <h1>📊 Relatórios</h1>
+          <div class="sub">Análise completa</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="report-tabs">
+          <button class="rtab active" onclick="switchReportTab('geral', this)">📊 Geral</button>
+          <button class="rtab" onclick="switchReportTab('compradores', this)">🏆 Compradores</button>
+          <button class="rtab" onclick="switchReportTab('vendedores', this)">👤 Vendedores</button>
+        </div>
+        <div id="report-content"></div>
+      </div>
+    </div>
+
+    <!-- ========== AJUSTES ========== -->
+    <div class="screen" id="screen-settings">
+      <div class="header">
+        <div class="header-content">
+          <div class="header-brand">
+            <div class="header-logo">⚙️</div>
+            <div><h1>Ajustes</h1><div class="sub">Personalize o app</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="settings-group">
+          <h4>Conta</h4>
+          <div class="settings-item" style="cursor:default;">
+            <div class="s-ico" id="user-avatar">👤</div>
+            <div class="s-label">
+              <h5 id="user-name">Carregando...</h5>
+              <p id="user-email">-</p>
+            </div>
+          </div>
+          <div class="settings-item" onclick="signOut()">
+            <div class="s-ico" style="background:#ffe5e5;">🚪</div>
+            <div class="s-label"><h5 style="color:var(--danger);">Sair</h5><p>Encerrar sessão</p></div>
+            <span class="s-action">›</span>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Aparência</h4>
+          <div class="settings-item" onclick="toggleDark()">
+            <div class="s-ico">🌙</div>
+            <div class="s-label"><h5>Modo escuro</h5><p>Descansa os olhos</p></div>
+            <div class="switch" id="switch-dark"></div>
+          </div>
+          <div class="settings-item" style="flex-direction:column;align-items:stretch;cursor:default;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+              <div class="s-ico">🎨</div>
+              <div class="s-label"><h5>Cor de destaque</h5><p>Escolha sua cor favorita</p></div>
+            </div>
+            <div class="color-grid" id="color-grid"></div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Feedback</h4>
+          <div class="settings-item" onclick="toggleHaptic()">
+            <div class="s-ico">📳</div>
+            <div class="s-label"><h5>Vibração</h5><p>Vibrar ao fazer ações</p></div>
+            <div class="switch" id="switch-haptic"></div>
+          </div>
+          <div class="settings-item" onclick="toggleConfetti()">
+            <div class="s-ico">🎉</div>
+            <div class="s-label"><h5>Confetes</h5><p>Animações de comemoração</p></div>
+            <div class="switch" id="switch-confetti"></div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Dados</h4>
+          <div class="settings-item" onclick="manualSync()">
+            <div class="s-ico">🔄</div>
+            <div class="s-label"><h5>Sincronizar agora</h5><p>Buscar novidades do servidor</p></div>
+            <span class="s-action">›</span>
+          </div>
+          <div class="settings-item" onclick="exportData()">
+            <div class="s-ico">📤</div>
+            <div class="s-label"><h5>Exportar backup</h5><p>Baixar todas as rifas em .json</p></div>
+            <span class="s-action">›</span>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Sobre</h4>
+          <div class="settings-item" style="cursor:default;">
+            <div class="s-ico">💚</div>
+            <div class="s-label"><h5>RifaControl Cloud v1.1</h5><p>Com rastreio de vendas ☁️</p></div>
+          </div>
+        </div>
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:11.5px;">🎟️ Boa sorte!</div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('home')">
+          <svg viewBox="0 0 24 24"><path d="M20 12c0-1.1.9-2 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2Z"/></svg>
+          Rifas
+        </button>
+        <button class="nav-item" onclick="showScreen('sorteio')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2ZM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18Zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6 18 6.67 18 7.5 17.33 9 16.5 9Z"/></svg>
+          Sortear
+        </button>
+        <button class="nav-item active" onclick="showScreen('settings')">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/></svg>
+          Ajustes
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== COMPRADOR ========== -->
+    <div class="screen" id="screen-buyer">
+      <div class="header" style="padding-bottom:22px;">
+        <div class="header-content">
+          <button class="back-btn" onclick="closeBuyer()">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2Z"/></svg>
+          </button>
+          <h1>👤 Comprador</h1>
+          <div class="sub">Detalhes completos</div>
+        </div>
+      </div>
+      <div class="content" id="buyer-content"></div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       MODAIS
+       ============================================================ -->
+
+  <!-- NOVA RIFA -->
+  <div class="modal-overlay" id="modal-rifa">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2><span class="emo">🎟️</span>Nova Rifa</h2>
+      <div class="field"><label>Nome da rifa</label><input id="in-rifa-name" placeholder="Ex: Rifa do Bem" maxlength="40"></div>
+      <div class="field"><label>Prêmio</label><input id="in-rifa-prize" placeholder="Ex: Cesta básica" maxlength="60"></div>
+      <div class="field">
+        <label>📸 Imagem do prêmio</label>
+        <div class="image-uploader" id="rifa-image-uploader" onclick="triggerImageUpload('rifa')">
+          <div class="up-icon">🖼️</div><div class="up-text">Toque para escolher</div><div class="up-hint">Do prêmio, do item, do que quiser</div>
+        </div>
+        <div class="upload-actions">
+          <button class="mini-btn" type="button" onclick="event.stopPropagation(); triggerImageUpload('rifa')">📁 Arquivo</button>
+          <button class="mini-btn" type="button" onclick="event.stopPropagation(); promptImageUrl('rifa')">🔗 URL</button>
+        </div>
+        <input type="file" id="rifa-image-input" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'rifa')">
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Preço por número (R$)</label><input id="in-rifa-price" type="number" step="0.01" min="0" placeholder="1.50" inputmode="decimal" oninput="updatePromoSummary()"></div>
+        <div class="field"><label>Qtd. números</label><input id="in-rifa-total" type="number" min="1" value="100" inputmode="numeric"></div>
+      </div>
+      <div class="field">
+        <label>🎁 Promoção</label>
+        <div class="promo-box disabled" id="promo-box">
+          <div class="promo-header">
+            <div class="promo-header-left">
+              <div class="promo-icon">🎁</div>
+              <div><div class="promo-title">Ativar promoção</div><div class="promo-subtitle">Desconto por quantidade</div></div>
+            </div>
+            <div class="switch small" id="promo-switch" onclick="togglePromo()"></div>
+          </div>
+          <div class="promo-content">
+            <div class="promo-row">
+              <span class="promo-row-label">Leve</span>
+              <input type="number" id="promo-qty" min="2" value="10" inputmode="numeric" oninput="updatePromoSummary()">
+              <span class="promo-row-label">por apenas</span>
+              <span class="promo-row-label" style="font-weight:800;">R$</span>
+              <input type="number" id="promo-price" min="0.01" step="0.01" value="10" class="money" inputmode="decimal" oninput="updatePromoSummary()">
+            </div>
+            <div class="promo-summary" id="promo-summary"></div>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>📅 Data</label><input id="in-rifa-date" type="date"></div>
+        <div class="field"><label>🕐 Hora</label><input id="in-rifa-time" type="time" value="20:00"></div>
+      </div>
+      <div class="field"><label>Ícone</label><div class="emoji-grid" id="emoji-grid"></div></div>
+      <div class="field"><label>Cor</label><div class="color-grid" id="rifa-color-grid"></div></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal('modal-rifa')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveRifa()">Criar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOVA VENDA -->
+  <div class="modal-overlay" id="modal-sale">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2><span class="emo">👤</span>Nova Venda</h2>
+      <div class="field"><label>Nome do comprador</label><input id="in-sale-name" placeholder="Ex: Maria Silva" maxlength="40"></div>
+      <div class="field"><label>Telefone (opcional)</label><input id="in-sale-phone" placeholder="(11) 99999-9999" maxlength="15" inputmode="tel" oninput="maskPhone(this)"></div>
+      <div class="field">
+        <label>Número(s) da rifa</label>
+        <input id="in-sale-nums" placeholder="Ex: 5, 12, 34" inputmode="numeric" oninput="updateSaleCalc()">
+        <p class="field-hint">Separe múltiplos por vírgula</p>
+        <button class="random-btn" type="button" onclick="openRandomNumbersModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2ZM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18Zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6 18 6.67 18 7.5 17.33 9 16.5 9Z"/></svg>
+          🎲 Números aleatórios
+        </button>
+        <div class="sale-calc" id="sale-calc"></div>
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" id="pay-paid" onclick="selectPay('paid')" style="padding:12px;">✅ Pago</button>
+          <button class="btn btn-ghost" id="pay-pending" onclick="selectPay('pending')" style="padding:12px;background:var(--primary);color:#fff;">⏳ Pendente</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal('modal-sale')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveSale()">Registrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALEATÓRIOS -->
+  <div class="modal-overlay center" id="modal-random">
+    <div class="confirm-modal">
+      <div class="confirm-icon info">🎲</div>
+      <h3>Números aleatórios</h3>
+      <p style="margin-bottom:16px;">Quantos números aleatórios você quer?</p>
+      <div class="field" style="text-align:left;">
+        <input id="in-random-count" type="number" min="1" placeholder="Ex: 5" inputmode="numeric" style="text-align:center;font-size:22px;font-weight:900;">
+        <p class="field-hint" id="random-hint" style="text-align:center;"></p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal('modal-random')">Cancelar</button>
+        <button class="btn btn-primary" onclick="confirmRandomNumbers()">🎲 Sortear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GANHADOR -->
+  <div class="modal-overlay" id="modal-winner">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2><span class="emo gold">🏆</span>Marcar Ganhador</h2>
+      <div class="field"><label>Número ganhador</label><input id="in-winner-num" type="number" min="1" placeholder="Ex: 42" inputmode="numeric"></div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-height:200px;overflow-y:auto;padding:4px;" id="winner-num-picker"></div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn btn-ghost" onclick="closeModal('modal-winner')">Cancelar</button>
+        <button class="btn btn-gold" onclick="confirmWinner()">🏆 Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SORTEIO -->
+  <div class="modal-overlay" id="modal-sort">
+    <div class="sort-modal">
+      <div class="modal-handle"></div>
+      <h2 style="font-size:19px;font-weight:800;margin-bottom:8px;">🎲 Sorteando...</h2>
+      <div class="sort-display" id="sort-display">?</div>
+      <div class="sort-winner" id="sort-winner"></div>
+      <div class="sort-actions-split" id="sort-actions-normal">
+        <button class="btn btn-ghost" onclick="closeSortModal()">Fechar</button>
+        <button class="btn btn-accent" id="btn-sort-again" onclick="rollAgain()">🎲 De novo</button>
+      </div>
+      <div class="sort-actions-split" id="sort-actions-winner" style="display:none;">
+        <button class="btn btn-ghost" onclick="closeSortModal()">Fechar</button>
+        <button class="btn btn-save" onclick="saveSortWinner()">🏆 Salvar ganhador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM -->
+  <div class="modal-overlay center" id="modal-confirm">
+    <div class="confirm-modal">
+      <div class="confirm-icon" id="confirm-icon">⚠️</div>
+      <h3 id="confirm-title">Confirmar?</h3>
+      <p id="confirm-desc"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeConfirm()">Cancelar</button>
+        <button class="btn btn-danger" id="confirm-ok" onclick="confirmOk()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTA -->
+  <div class="modal-overlay" id="modal-list">
+    <div class="list-modal">
+      <div class="modal-handle"></div>
+      <h2><span class="emo">📋</span>Lista</h2>
+      <div class="list-stats" id="list-stats"></div>
+      <div class="list-preview" id="list-preview"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal('modal-list')">Fechar</button>
+        <button class="btn btn-primary" onclick="copyList()">📋 Copiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUM INFO -->
+  <div class="modal-overlay center" id="modal-num-info">
+    <div class="confirm-modal">
+      <div class="confirm-icon info" id="num-info-icon">🎯</div>
+      <h3 id="num-info-title">Número</h3>
+      <p id="num-info-desc"></p>
+      <div class="modal-actions" style="flex-direction:column;">
+        <button class="btn btn-primary" id="num-info-buyer-btn" onclick="goToBuyerFromNum()" style="display:none;">👤 Ver comprador</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-num-info')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT IMAGE -->
+  <div class="modal-overlay" id="modal-edit-image">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2><span class="emo">🖼️</span>Imagem</h2>
+      <div class="field">
+        <div class="image-uploader" id="edit-image-uploader" onclick="triggerImageUpload('edit')">
+          <div class="up-icon">🖼️</div><div class="up-text">Toque para escolher</div>
+        </div>
+        <div class="upload-actions">
+          <button class="mini-btn" type="button" onclick="triggerImageUpload('edit')">📁 Arquivo</button>
+          <button class="mini-btn" type="button" onclick="promptEditImageUrl()">🔗 URL</button>
+        </div>
+        <input type="file" id="edit-image-input" accept="image/*" style="display:none" onchange="handleEditImageUpload(event)">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal('modal-edit-image')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARE -->
+  <div class="modal-overlay" id="modal-share">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <h2><span class="emo">👥</span>Compartilhar</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;font-weight:500;">
+        Compartilhe essa rifa com outras pessoas. Elas poderão ver e editar.
+      </p>
+      <div class="field"><label>Email</label><input id="in-share-email" type="email" placeholder="email@exemplo.com" autocomplete="email"></div>
+      <button class="btn btn-primary" style="width:100%;" onclick="shareRifa()">➕ Compartilhar</button>
+      <div style="margin-top:20px;">
+        <label style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:10px;">Quem tem acesso</label>
+        <div id="share-list"></div>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn btn-ghost" onclick="closeModal('modal-share')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST + CONFETTI -->
+  <div class="toast" id="toast"></div>
+  <div class="confetti-container" id="confetti-container"></div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script type="module" src="src/main.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+</script>
+
+</body>
+</html>
