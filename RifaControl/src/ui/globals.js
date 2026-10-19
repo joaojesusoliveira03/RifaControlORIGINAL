@@ -1,5 +1,5 @@
-/* ============================================================
-   Globals — ponte entre módulos e o HTML (onclick="...")
+﻿/* ============================================================
+   Globals â€” ponte entre mÃ³dulos e o HTML (onclick="...")
    ============================================================ */
 
 // Utils
@@ -18,7 +18,7 @@ import { openModal, closeModal, closeAllModals } from './components/modal.js';
 
 // Theme
 import {
-  applyTheme, toggleDark, toggleHaptic, toggleConfetti, setAccent
+  applyTheme, toggleDark, toggleHaptic, toggleConfetti, setAccent, toggleHideValues
 } from '../core/theme.js';
 
 // Router
@@ -57,145 +57,77 @@ import * as ShareModal from './modals/share.modal.js';
 import * as Marketing from './modals/marketing.modal.js';
 
 /* ------------------------------------------------------------
-   Exposição global
+   ExposiÃ§Ã£o global
    ------------------------------------------------------------ */
 Object.assign(window, {
-
   // ---------- Utils ----------
-  escapeHtml,
-  shade,
-  getAvatarColor,
-  getAvatarInitial,
-  maskPhone,
-  formatDateBR,
-  formatDateTimeBR,
-  formatBRL,
-  onlyDigits,
-  haptic,
-  copyToClipboard,
+  escapeHtml, shade, getAvatarColor, getAvatarInitial, maskPhone, formatDateBR, formatDateTimeBR, formatBRL, onlyDigits, haptic, copyToClipboard,
 
   // ---------- Components ----------
-  toast,
-  toastWithAction,
-  showConfirm,
-  closeConfirm,
-  confirmOk,
-  launchConfetti,
-  openModal,
-  closeModal,
-  closeAllModals,
+  toast, toastWithAction, showConfirm, closeConfirm, confirmOk, launchConfetti, openModal, closeModal, closeAllModals,
 
   // ---------- Theme ----------
-  applyTheme,
-  toggleDark,
-  toggleHaptic,
-  toggleConfetti,
-  setAccent,
+  applyTheme, toggleDark, toggleHaptic, toggleConfetti, setAccent, toggleHideValues,
 
   // ---------- Router ----------
-  showScreen,
-  switchTab,
-  switchReportTab,
+  showScreen, switchTab, switchReportTab,
 
   // ---------- Auth ----------
-  handleAuth,
-  switchAuthTab,
-  showForgotPassword,
-  backToLogin,
-  sendForgotPassword,
-  updatePassword,
-  signOut,
-  setSyncStatus,
+  handleAuth, switchAuthTab, showForgotPassword, backToLogin, sendForgotPassword, updatePassword, signOut, setSyncStatus,
 
   // ---------- Services ----------
-  calcSaleCost,
-  calcArrecadado,
-  calcPendente,
+  calcSaleCost, calcArrecadado, calcPendente,
 
   // ---------- Screens ----------
   // Home
-  renderHome:          HomeScreen.renderHome,
-  clearSearch:         HomeScreen.clearSearch,
-  initSearchInput:     HomeScreen.initSearchInput,
-
+  renderHome: HomeScreen.renderHome, clearSearch: HomeScreen.clearSearch, initSearchInput: HomeScreen.initSearchInput,
+  
   // Rifa
-  openRifa:            RifaScreen.openRifa,
-  renderRifa:          RifaScreen.renderRifa,
-  switchTabRifa:       RifaScreen.switchTabRifa,
-  deleteRifa:          RifaScreen.deleteRifa,
-  showNumInfo:         RifaScreen.showNumInfo,
-
+  openRifa: RifaScreen.openRifa, renderRifa: RifaScreen.renderRifa, switchTabRifa: RifaScreen.switchTabRifa,
+  deleteRifa: RifaScreen.deleteRifa, leaveRifa: RifaScreen.leaveRifa, showNumInfo: RifaScreen.showNumInfo,
+  
   // Sorteio
-  renderSorteioList:   SortScreen.renderSorteioList,
-  startSort:           SortScreen.startSort,
-  rollAgain:           SortScreen.rollAgain,
-  saveSortWinner:      SortScreen.saveSortWinner,
-  closeSortModal:      SortScreen.closeSortModal,
-
+  renderSorteioList: SortScreen.renderSorteioList, startSort: SortScreen.startSort,
+  rollAgain: SortScreen.rollAgain, saveSortWinner: SortScreen.saveSortWinner, closeSortModal: SortScreen.closeSortModal,
+  
   // Reports
-  renderReports:       ReportsScreen.renderReports,
-
+  renderReports: ReportsScreen.renderReports, closeRifaReport: ReportsScreen.closeRifaReport,
+  
   // Settings
-  renderSettings:      SettingsScreen.renderSettings,
-  manualSync:          SettingsScreen.manualSync,
-  exportData:          SettingsScreen.exportData,
-
+  renderSettings: SettingsScreen.renderSettings, manualSync: SettingsScreen.manualSync, exportData: SettingsScreen.exportData,
+  
   // Buyer
-  openBuyer:           BuyerScreen.openBuyer,
-  closeBuyer:          BuyerScreen.closeBuyer,
-
+  openBuyer: BuyerScreen.openBuyer, closeBuyer: BuyerScreen.closeBuyer,
+  
   // Num Info
-  goToBuyerFromNum:    NumInfo.goToBuyerFromNum,
+  goToBuyerFromNum: NumInfo.goToBuyerFromNum,
 
   // ---------- Rifa Modal ----------
-  openRifaModal:       RifaModal.openRifaModal,
-  saveRifa:            RifaModal.saveRifa,
-  togglePromo:         RifaModal.togglePromo,
-  updatePromoSummary:  RifaModal.updatePromoSummary,
-  triggerImageUpload:  RifaModal.triggerImageUpload,
-  handleImageUpload:   RifaModal.handleImageUpload,
-  promptImageUrl:      RifaModal.promptImageUrl,
-  removeRifaImage:     RifaModal.removeRifaImage,
-
-  // Edição de imagem (rifa atual)
-  openEditImageModal:     RifaModal.openEditImageModal,
-  removeEditImage:        RifaModal.removeEditImage,
-  handleEditImageUpload:  RifaModal.handleEditImageUpload,
-  promptEditImageUrl:     RifaModal.promptEditImageUrl,
-
-  // Edição de promoção (rifa atual)
-  openEditPromoModal:     RifaModal.openEditPromoModal,
-  toggleEditPromo:        RifaModal.toggleEditPromo,
-  updateEditPromoSummary: RifaModal.updateEditPromoSummary,
-  saveEditPromo:          RifaModal.saveEditPromo,
+  openRifaModal: RifaModal.openRifaModal, saveRifa: RifaModal.saveRifa, togglePromo: RifaModal.togglePromo,
+  updatePromoSummary: RifaModal.updatePromoSummary, updateRifaPreview: RifaModal.updateRifaPreview,
+  triggerImageUpload: RifaModal.triggerImageUpload, handleImageUpload: RifaModal.handleImageUpload,
+  promptImageUrl: RifaModal.promptImageUrl, removeRifaImage: RifaModal.removeRifaImage,
+  openEditImageModal: RifaModal.openEditImageModal, removeEditImage: RifaModal.removeEditImage,
+  handleEditImageUpload: RifaModal.handleEditImageUpload, promptEditImageUrl: RifaModal.promptEditImageUrl,
+  openEditPromoModal: RifaModal.openEditPromoModal, toggleEditPromo: RifaModal.toggleEditPromo,
+  updateEditPromoSummary: RifaModal.updateEditPromoSummary, saveEditPromo: RifaModal.saveEditPromo,
 
   // ---------- Sale Modal ----------
-  openSaleModal:            SaleModal.openSaleModal,
-  saveSale:                 SaleModal.saveSale,
-  selectPay:                SaleModal.selectPay,
-  updateSaleCalc:           SaleModal.updateSaleCalc,
-  updateRandomHint:         SaleModal.updateRandomHint,
-  openRandomNumbersModal:   SaleModal.openRandomNumbersModal,
-  confirmRandomNumbers:     SaleModal.confirmRandomNumbers,
-  addNumbersToBuyer:        SaleModal.addNumbersToBuyer,
-  markAllPaid:              SaleModal.markAllPaid,
-  togglePaid:               SaleModal.togglePaid,
+  openSaleModal: SaleModal.openSaleModal, saveSale: SaleModal.saveSale, selectPay: SaleModal.selectPay,
+  updateSaleCalc: SaleModal.updateSaleCalc, updateRandomHint: SaleModal.updateRandomHint,
+  openRandomNumbersModal: SaleModal.openRandomNumbersModal, confirmRandomNumbers: SaleModal.confirmRandomNumbers,
+  addNumbersToBuyer: SaleModal.addNumbersToBuyer, markAllPaid: SaleModal.markAllPaid, togglePaid: SaleModal.togglePaid,
 
   // ---------- Winner Modal ----------
-  openWinnerModal:     WinnerModal.openWinnerModal,
-  confirmWinner:       WinnerModal.confirmWinner,
-  removeWinner:        WinnerModal.removeWinner,
-  showNumInfoModal:    WinnerModal.showNumInfo,
+  openWinnerModal: WinnerModal.openWinnerModal, confirmWinner: WinnerModal.confirmWinner,
+  removeWinner: WinnerModal.removeWinner, showNumInfoModal: WinnerModal.showNumInfo,
 
   // ---------- List Modal ----------
-  openListModal:       ListModal.openListModal,
-  copyList:            ListModal.copyList,
+  openListModal: ListModal.openListModal, copyList: ListModal.copyList,
 
   // ---------- Share Modal ----------
-  openShareModal:      ShareModal.openShareModal,
-  shareRifa:           ShareModal.shareRifa,
-  removeShare:         ShareModal.removeShare,
+  openShareModal: ShareModal.openShareModal, shareRifa: ShareModal.shareRifa, removeShare: ShareModal.removeShare,
 
   // ---------- Marketing ----------
-  shareMarketingText:  Marketing.shareMarketingText
+  shareMarketingText: Marketing.shareMarketingText
 });

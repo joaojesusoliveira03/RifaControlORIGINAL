@@ -1,0 +1,9 @@
+﻿.settings-group{background:var(--card);border-radius:18px;padding:6px;margin-bottom:12px;border:1px solid var(--border);}
+.settings-group h4{font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:10px 12px 6px;}
+.settings-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;cursor:pointer;transition:.15s;}
+.settings-item:active{background:var(--bg2);}
+.settings-item .s-ico{width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:var(--bg2);}
+.settings-item .s-label{flex:1;}
+.settings-item .s-label h5{font-size:14px;font-weight:800;margin-bottom:2px;}
+.settings-item .s-label p{font-size:11.5px;color:var(--muted);font-weight:500;}
+.settings-item .s-action{color:var(--muted);font-size:18px;}

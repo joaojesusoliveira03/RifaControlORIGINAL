@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    Sidebar — navegação lateral (só aparece no desktop)
    ============================================================ */
 
@@ -6,7 +6,6 @@ import { APP } from '../../config/state.js';
 
 /**
  * Marca o item da sidebar correspondente à tela atual.
- * Chamado pelo router sempre que troca de tela.
  */
 export function setSidebarActive(screenName) {
   const items = document.querySelectorAll('.sidebar-item');
@@ -17,7 +16,6 @@ export function setSidebarActive(screenName) {
 
 /**
  * Atualiza dados do usuário na sidebar (nome, email, avatar).
- * Chamado depois do login.
  */
 export function updateSidebarUser() {
   if (!APP.user) return;
@@ -27,12 +25,17 @@ export function updateSidebarUser() {
   const initial = (name || email)[0].toUpperCase();
 
   const elName = document.getElementById('sidebar-user-name');
-  const elEmail = document.getElementById('sidebar-user-email-footer');
-  const elEmailHeader = document.getElementById('sidebar-user-email');
+  const elEmailFooter = document.getElementById('sidebar-user-email-footer');
   const elAvatar = document.getElementById('sidebar-user-avatar');
 
   if (elName) elName.textContent = name;
-  if (elEmail) elEmail.textContent = email;
-  if (elEmailHeader) elEmailHeader.textContent = email;
-  if (elAvatar) elAvatar.textContent = initial;
+  
+  // Aqui está a mudança: em vez do email, mostramos "Ver perfil"
+  if (elEmailFooter) {
+    elEmailFooter.textContent = 'Ver perfil';
+  }
+  
+  if (elAvatar) {
+    elAvatar.textContent = initial;
+  }
 }

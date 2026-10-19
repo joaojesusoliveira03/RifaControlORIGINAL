@@ -1,0 +1,24 @@
+/* Adicione no final do buttons.css */
+
+/* Garante que SVGs dentro de botões nunca quebrem o layout */
+.btn svg, 
+.modal-footer-custom .btn svg,
+button svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Botão de dados (ícone) */
+button[title="Números aleatórios"] {
+  background: var(--bg2) !important;
+  border: 2px solid var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+button[title="Números aleatórios"]:hover {
+  background: var(--border) !important;
+}

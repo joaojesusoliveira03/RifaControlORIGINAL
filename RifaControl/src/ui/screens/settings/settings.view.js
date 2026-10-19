@@ -1,0 +1,99 @@
+/* ============================================================
+   Settings View — HTML da tela de Ajustes
+   ============================================================ */
+
+export function getSettingsViewHTML() {
+  return `
+    <!-- AJUSTES -->
+    <div class="screen" id="screen-settings">
+      <div class="header">
+        <div class="header-content">
+          <div class="header-brand">
+            <div class="header-logo">⚙️</div>
+            <div><h1>Ajustes</h1><div class="sub">Personalize o app</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="settings-group">
+          <h4>Conta</h4>
+          <div class="settings-item" style="cursor:default;">
+            <div class="s-ico" id="user-avatar">👤</div>
+            <div class="s-label">
+              <h5 id="user-name">Carregando...</h5>
+              <p id="user-email">-</p>
+            </div>
+          </div>
+          <div class="settings-item" onclick="signOut()">
+            <div class="s-ico" style="background:#ffe5e5;">🚪</div>
+            <div class="s-label"><h5 style="color:var(--danger);">Sair</h5><p>Encerrar sessão</p></div>
+            <span class="s-action">›</span>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Aparência</h4>
+          <div class="settings-item" onclick="toggleDark()">
+            <div class="s-ico">🌙</div>
+            <div class="s-label"><h5>Modo escuro</h5><p>Descansa os olhos</p></div>
+            <div class="switch" id="switch-dark"></div>
+          </div>
+          <div class="settings-item" style="flex-direction:column;align-items:stretch;cursor:default;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+              <div class="s-ico">🎨</div>
+              <div class="s-label"><h5>Cor de destaque</h5><p>Escolha sua cor favorita</p></div>
+            </div>
+            <div class="color-grid" id="color-grid"></div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Feedback</h4>
+          <div class="settings-item" onclick="toggleHaptic()">
+            <div class="s-ico">📳</div>
+            <div class="s-label"><h5>Vibração</h5><p>Vibrar ao fazer ações</p></div>
+            <div class="switch" id="switch-haptic"></div>
+          </div>
+          <div class="settings-item" onclick="toggleConfetti()">
+            <div class="s-ico">🎉</div>
+            <div class="s-label"><h5>Confetes</h5><p>Animações de comemoração</p></div>
+            <div class="switch" id="switch-confetti"></div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Dados</h4>
+          <div class="settings-item" onclick="manualSync()">
+            <div class="s-ico">🔄</div>
+            <div class="s-label"><h5>Sincronizar agora</h5><p>Buscar novidades do servidor</p></div>
+            <span class="s-action">›</span>
+          </div>
+          <div class="settings-item" onclick="exportData()">
+            <div class="s-ico">📤</div>
+            <div class="s-label"><h5>Exportar backup</h5><p>Baixar todas as rifas em .json</p></div>
+            <span class="s-action">›</span>
+          </div>
+        </div>
+        <div class="settings-group">
+          <h4>Sobre</h4>
+          <div class="settings-item" style="cursor:default;">
+            <div class="s-ico">💚</div>
+            <div class="s-label"><h5>RifaControl Cloud v1.1</h5><p>Com rastreio de vendas ☁️</p></div>
+          </div>
+        </div>
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:11.5px;">🎟️ Boa sorte!</div>
+      </div>
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('home')">
+          <svg viewBox="0 0 24 24"><path d="M20 12c0-1.1.9-2 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2Z"/></svg>
+          Rifas
+        </button>
+        <button class="nav-item" onclick="showScreen('sorteio')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2ZM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18Zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5Zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6 18 6.67 18 7.5 17.33 9 16.5 9Z"/></svg>
+          Sortear
+        </button>
+        <button class="nav-item active" onclick="showScreen('settings')">
+          <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97 0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1 0 .33.03.65.07.97l-2.11 1.66c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/></svg>
+          Ajustes
+        </button>
+      </div>
+    </div>
+  `;
+}

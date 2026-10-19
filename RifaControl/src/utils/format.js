@@ -2,9 +2,8 @@
    Format — helpers de formatação, escape, cores, avatares
    ============================================================ */
 
-/**
- * Escapa HTML para prevenir XSS ao injetar strings em templates.
- */
+import { APP } from '../config/state.js';
+
 export function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({
     '&': '&amp;',
@@ -15,9 +14,6 @@ export function escapeHtml(s) {
   }[c]));
 }
 
-/**
- * Clareia/escurece um hex. Ex: shade('#00b894', -25) → mais escuro.
- */
 export function shade(hex, pct) {
   const n = parseInt(hex.slice(1), 16);
   let r = (n >> 16) + pct;
@@ -29,9 +25,6 @@ export function shade(hex, pct) {
   return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
 }
 
-/**
- * Retorna uma cor de avatar determinística baseada no nome.
- */
 export function getAvatarColor(name) {
   if (!name) return '#00b894';
   let hash = 0;
@@ -45,9 +38,6 @@ export function getAvatarColor(name) {
   return palette[Math.abs(hash) % palette.length];
 }
 
-/**
- * Retorna 1 ou 2 iniciais do nome (ex: "Maria Silva" → "MS").
- */
 export function getAvatarInitial(name) {
   if (!name) return '?';
   const parts = name.trim().split(/\s+/);
@@ -55,10 +45,6 @@ export function getAvatarInitial(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-/**
- * Aplica máscara de telefone brasileiro num <input>.
- * Uso: oninput="maskPhone(this)"
- */
 export function maskPhone(input) {
   let v = input.value.replace(/\D/g, '');
   if (v.length > 11) v = v.slice(0, 11);
@@ -71,17 +57,11 @@ export function maskPhone(input) {
     '(' + v.slice(0, 2) + ') ' + v.slice(2, 7) + '-' + v.slice(7);
 }
 
-/**
- * Formata data ISO para pt-BR curto (dd/mm/aaaa).
- */
 export function formatDateBR(iso) {
   if (!iso) return '';
   return new Date(iso).toLocaleDateString('pt-BR');
 }
 
-/**
- * Formata data ISO + hora (dd/mm/aaaa às hh:mm).
- */
 export function formatDateTimeBR(iso) {
   if (!iso) return '';
   const d = new Date(iso);
@@ -91,16 +71,14 @@ export function formatDateTimeBR(iso) {
 }
 
 /**
- * Formata número como moeda (R$ 12,50).
+ * Formata valor como moeda. Se hideValues estiver ativo, retorna bolinhas.
  */
 export function formatBRL(value) {
+  if (APP.hideValues) return '••••••';
   const n = typeof value === 'number' ? value : parseFloat(value) || 0;
   return 'R$ ' + n.toFixed(2);
 }
 
-/**
- * Extrai apenas dígitos de uma string (pra usar em tel: / wa.me).
- */
 export function onlyDigits(s) {
   return String(s || '').replace(/\D/g, '');
 }

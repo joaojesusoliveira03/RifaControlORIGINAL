@@ -1,8 +1,12 @@
-const CACHE_NAME = 'rifacontrol-v2';
+const CACHE_NAME = 'rifacontrol-v5';
 const ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/src/styles/main.css',      // <-- Atualizado
+  '/src/styles/desktop.css',   // <-- Atualizado
+  '/assets/brand/logo.png',
+  '/assets/brand/banner.png',
   '/src/main.js',
   '/src/config/supabase.js',
   '/src/config/state.js',

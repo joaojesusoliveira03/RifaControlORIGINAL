@@ -1,0 +1,57 @@
+﻿/* ============================================================
+   Navegação, Header e Tabs
+   ============================================================ */
+.header{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);color:#fff;padding:20px 20px 70px;border-radius:0 0 26px 26px;box-shadow:0 4px 16px rgba(0,184,148,.2);flex-shrink:0;position:relative;overflow:visible;}
+.header-content{position:relative;z-index:1;}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px;}
+.header-brand{display:flex;align-items:center;gap:10px;}
+.header-logo{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.header h1{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.2;}
+.header .sub{font-size:12px;opacity:.85;margin-top:2px;font-weight:500;}
+.header-actions{display:flex;gap:8px;}
+.icon-btn{background:rgba(255,255,255,.18);border:none;color:#fff;width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;transition:transform .15s, background .2s;cursor:pointer;}
+.icon-btn:active{transform:scale(.9);background:rgba(255,255,255,.3);}
+.icon-btn svg{width:20px;height:20px;fill:currentColor;}
+.back-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:40px;height:40px;border-radius:13px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;transition:transform .15s;cursor:pointer;}
+.back-btn:active{transform:scale(.9);}
+.back-btn svg{width:22px;height:22px;fill:currentColor;}
+
+/* Olho (Toggle Valores) */
+.icon-btn-eye {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.icon-btn-eye:hover { background: rgba(255, 255, 255, 0.25); }
+.icon-btn-eye svg { width: 16px; height: 16px; fill: currentColor; }
+
+.sync-status{position:absolute;top:12px;right:70px;font-size:10.5px;font-weight:700;background:rgba(255,255,255,.18);padding:5px 10px;border-radius:8px;display:flex;align-items:center;gap:5px;transition:.2s;}
+.sync-status.syncing{background:rgba(253,203,110,.3);}
+.sync-status.error{background:rgba(239,68,68,.3);}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#55efc4;animation:pulseDot 2s ease-in-out infinite;}
+.sync-status.syncing .sync-dot{background:#fdcb6e;}
+.sync-status.error .sync-dot{background:#ef4444;}
+
+.bottom-nav{height:72px;background:var(--card);display:flex;border-top:1px solid var(--border);flex-shrink:0;z-index:30;padding:0 10px 6px;transition:background var(--transition), border-color var(--transition);}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;font-weight:700;transition:color .2s;font-family:inherit;padding:8px 4px;border-radius:14px;margin:0 3px;}
+.nav-item svg{width:22px;height:22px;fill:currentColor;transition:transform .2s;}
+.nav-item.active{color:var(--primary);}
+.nav-item.active svg{transform:scale(1.08);}
+
+.tabs{display:flex;gap:6px;padding:14px 16px 4px;background:var(--bg);overflow-x:auto;}
+.tabs::-webkit-scrollbar{height:0;}
+.tab{flex:1;min-width:0;padding:10px 8px;border-radius:12px;border:none;background:var(--card);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.tab.active{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;}
+
+.fab{position:absolute;bottom:88px;right:20px;width:58px;height:58px;border-radius:20px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(0,184,148,.45);display:flex;align-items:center;justify-content:center;z-index:20;transition:transform .15s;}
+.fab svg{width:26px;height:26px;fill:currentColor;}
+.fab:active{transform:scale(.9) rotate(90deg);}

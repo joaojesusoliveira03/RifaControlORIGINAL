@@ -7,7 +7,10 @@
  */
 export function openModal(id) {
   const el = document.getElementById(id);
-  if (el) el.classList.add('show');
+  if (el) {
+    el.classList.add('show');
+    document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
+  }
 }
 
 /**
@@ -15,7 +18,10 @@ export function openModal(id) {
  */
 export function closeModal(id) {
   const el = document.getElementById(id);
-  if (el) el.classList.remove('show');
+  if (el) {
+    el.classList.remove('show');
+    document.body.style.overflow = ''; // Destrava o scroll
+  }
 }
 
 /**
@@ -24,6 +30,7 @@ export function closeModal(id) {
 export function closeAllModals() {
   document.querySelectorAll('.modal-overlay.show')
     .forEach(m => m.classList.remove('show'));
+  document.body.style.overflow = '';
 }
 
 /**
@@ -43,6 +50,7 @@ export function initModalOverlayDismiss() {
       if (e.target === overlay) {
         if (protectedIds.includes(overlay.id)) return;
         overlay.classList.remove('show');
+        document.body.style.overflow = '';
       }
     });
   });
@@ -54,5 +62,6 @@ export function initModalOverlayDismiss() {
       if (protectedIds.includes(m.id)) return;
       m.classList.remove('show');
     });
+    document.body.style.overflow = '';
   });
 }

@@ -34,13 +34,9 @@ export function openListModal(rifaId) {
     listText += `${i} - ${name ? name : ''}${w}\n`;
   }
 
+  // AQUI: Removemos o fechamento com os totais e ganhador
   listText += `─────────────────────\n`;
-  listText += `💰 Arrecadado: R$ ${calcArrecadado(r).toFixed(2)}\n`;
-  listText += `⏳ Pendente: R$ ${calcPendente(r).toFixed(2)}`;
-
-  if (r.winner) {
-    listText += `\n🏆 GANHADOR: ${r.winner.num} - ${r.winner.name}`;
-  }
+  listText += `Fim da lista.`;
 
   const stats = document.getElementById('list-stats');
   if (stats) {

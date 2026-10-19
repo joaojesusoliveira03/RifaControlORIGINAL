@@ -1,0 +1,20 @@
+﻿.report-tabs{display:flex;gap:8px;padding:0 0 14px;overflow-x:auto;}
+.report-tabs::-webkit-scrollbar{height:0;}
+.rtab{padding:9px 16px;border-radius:12px;border:2px solid var(--border);background:var(--card);color:var(--muted);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.rtab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.report-card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid var(--border);}
+.report-card h4{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;}
+.big-number{font-size:30px;font-weight:900;letter-spacing:-1.5px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.big-number.gold{background:linear-gradient(135deg,#fbbf24,#d97706);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.big-number-label{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.big-number-sub{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:4px;}
+.ranking-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.ranking-item:last-child{border-bottom:none;}
+.rank-pos{width:30px;height:30px;border-radius:10px;background:var(--bg2);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.rank-pos.gold{background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;}
+.rank-pos.silver{background:linear-gradient(135deg,#cbd5e1,#94a3b8);color:#fff;}
+.rank-pos.bronze{background:linear-gradient(135deg,#f59e0b,#b45309);color:#fff;}
+.rank-info{flex:1;min-width:0;}
+.rank-info h5{font-size:13.5px;font-weight:800;margin-bottom:2px;}
+.rank-info p{font-size:11px;color:var(--muted);font-weight:500;}
+.rank-count{background:var(--bg2);color:var(--text);padding:5px 10px;border-radius:9px;font-size:12px;font-weight:900;}

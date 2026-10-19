@@ -8,26 +8,18 @@ import { storage } from '../utils/storage.js';
 import { haptic, setHapticEnabled } from '../utils/haptic.js';
 import { toast } from '../ui/components/toast.js';
 
-/**
- * Aplica dark mode + accent + switches no DOM.
- * Deve ser chamada sempre que APP.dark / APP.accentIdx / APP.haptic / APP.confetti mudar.
- */
 export function applyTheme() {
-  // Dark mode
   document.body.classList.toggle('dark', APP.dark);
 
-  // Cor de destaque
   const a = ACCENT_COLORS[APP.accentIdx] || ACCENT_COLORS[0];
   const root = document.documentElement;
   root.style.setProperty('--primary', a.primary);
   root.style.setProperty('--primary-dark', a.dark);
   root.style.setProperty('--primary-light', a.light);
 
-  // Meta theme-color (barra do navegador no mobile)
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.setAttribute('content', a.primary);
 
-  // Switches da tela de settings
   const swDark = document.getElementById('switch-dark');
   if (swDark) swDark.classList.toggle('on', APP.dark);
 
@@ -37,29 +29,21 @@ export function applyTheme() {
   const swConfetti = document.getElementById('switch-confetti');
   if (swConfetti) swConfetti.classList.toggle('on', APP.confetti);
 
-  // Grid de cores (marca a ativa)
   const colors = document.querySelectorAll('#color-grid .color-opt');
   colors.forEach((el, i) => el.classList.toggle('active', i === APP.accentIdx));
 
-  // Sincroniza módulo de haptic com o estado
   setHapticEnabled(APP.haptic);
 }
 
-/**
- * Inicializa preferências a partir do storage.
- * Deve ser chamada UMA VEZ no boot.
- */
 export function initTheme() {
   APP.dark = storage.getBool('dark', false);
   APP.haptic = storage.getBool('haptic', true);
   APP.confetti = storage.getBool('confetti', true);
   APP.accentIdx = storage.getInt('accent', 0);
+  APP.hideValues = localStorage.getItem('rc_hide_values') === '1'; // <-- CARREGA O ESTADO
   applyTheme();
 }
 
-/**
- * Alterna dark mode e persiste.
- */
 export function toggleDark() {
   APP.dark = !APP.dark;
   haptic(15);
@@ -68,9 +52,6 @@ export function toggleDark() {
   toast(APP.dark ? '🌙 Escuro' : '☀️ Claro');
 }
 
-/**
- * Alterna vibração e persiste.
- */
 export function toggleHaptic() {
   APP.haptic = !APP.haptic;
   haptic(15);
@@ -79,9 +60,6 @@ export function toggleHaptic() {
   toast(APP.haptic ? '📳 Vibração on' : '📴 Vibração off');
 }
 
-/**
- * Alterna confetes e persiste.
- */
 export function toggleConfetti() {
   APP.confetti = !APP.confetti;
   haptic(15);
@@ -90,13 +68,26 @@ export function toggleConfetti() {
   toast(APP.confetti ? '🎉 Confetes on' : '🎈 Confetes off');
 }
 
-/**
- * Define cor de destaque pelo índice.
- */
 export function setAccent(i) {
   APP.accentIdx = i;
   haptic(15);
   applyTheme();
   storage.setInt('accent', i);
   toast('🎨 Cor atualizada!');
+}
+
+/* ------------------------------------------------------------
+   Olho (Esconder/Mostrar Valores)
+   ------------------------------------------------------------ */
+export function toggleHideValues() {
+  APP.hideValues = !APP.hideValues;
+  haptic(15);
+  localStorage.setItem('rc_hide_values', APP.hideValues ? '1' : '0');
+  
+  // Atualiza os displays visíveis
+  if (window.updateMoneyDisplays) {
+    window.updateMoneyDisplays();
+  }
+  
+  toast(APP.hideValues ? '🙈 Valores ocultos' : '👁️ Valores visíveis');
 }

@@ -13,24 +13,28 @@ export const APP = {
   currentBuyer: null,
 
   // Navegação
-  currentTab: 'numbers',      // numbers | sales | info
-  currentReportTab: 'geral',  // geral | compradores | vendedores
-  authMode: 'login',          // login | signup
+  currentTab: 'numbers',        // numbers | sales | info
+  currentReportTab: 'geral',    // geral | compradores | vendedores
+  currentReportRifa: null,      // rifa aberta no detalhe do relatório
+  authMode: 'login',            // login | signup
 
   // Preferências
   dark: false,
   accentIdx: 0,
   haptic: true,
   confetti: true,
+  hideValues: false,            // <-- NOVA FLAG AQUI
 
   // Formulários (transient)
   newRifaEmoji: '🎟️',
   newRifaColor: 0,
   newRifaImage: null,
   newRifaPromoEnabled: false,
+  newRifaPromoQuantity: 10,
+  newRifaPromoPrice: 10,
   salePay: 'pending',
   search: '',
-  gridFilter: 'all',          // all | paid | pending | available | winner
+  gridFilter: 'all',            // all | paid | pending | available | winner
 
   // Infra
   realtimeChannel: null,
@@ -38,8 +42,7 @@ export const APP = {
 };
 
 /* ------------------------------------------------------------
-   Event bus minimalista — pra notificar mudanças de estado
-   Uso: subscribe(fn) → retorna unsubscribe()
+   Event bus minimalista
    ------------------------------------------------------------ */
 const listeners = new Set();
 

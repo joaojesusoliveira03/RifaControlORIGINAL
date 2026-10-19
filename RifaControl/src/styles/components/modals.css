@@ -1,0 +1,154 @@
+﻿/* ============================================================
+   Modais Genéricos e Base
+   ============================================================ */
+.modal-overlay { 
+  position: fixed; 
+  inset: 0; 
+  background: rgba(10, 12, 20, .6); 
+  display: none; 
+  align-items: flex-end; 
+  z-index: 200; 
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; animation: fade .18s; }
+.modal-overlay.center { align-items: center; justify-content: center; }
+
+/* O Modal Base (Mobile) */
+.modal { 
+  background: var(--card); 
+  width: 100%; 
+  border-radius: 28px 28px 0 0; 
+  padding: 8px 0 0 0; /* Padding lateral 0 para o footer colar nas bordas */
+  animation: slideUp .3s cubic-bezier(.4,0,.2,1); 
+  max-height: 92vh; 
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+}
+
+.modal-handle { 
+  width: 42px; height: 5px; background: var(--border); border-radius: 3px; 
+  margin: 8px auto 18px; flex-shrink: 0;
+}
+
+/* Header */
+.modal-header-custom {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 20px 16px; border-bottom: 1px solid var(--border);
+  margin-bottom: 0; flex-shrink: 0;
+}
+.modal-header-custom h2 { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; margin: 0; }
+.modal-header-custom h2 .emo { width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(135deg, var(--primary-light), var(--primary)); display: flex; align-items: center; justify-content: center; font-size: 19px; }
+
+/* Footer */
+.modal-footer-custom {
+  display: flex; gap: 12px; padding: 16px 20px calc(28px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border); background: var(--card);
+  flex-shrink: 0;
+}
+.modal-footer-custom .btn { flex: 1; margin: 0; }
+
+/* Botão fechar */
+.close-btn { background: var(--bg2) !important; color: var(--muted) !important; border-radius: 50% !important; width: 36px !important; height: 36px !important; font-size: 16px !important; }
+
+/* Blocos de Formulário */
+.form-section { background: var(--bg2); border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+.form-section-title { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.form-section .field { margin-bottom: 12px; }
+.form-section .field:last-child { margin-bottom: 0; }
+.form-section .field label { color: var(--text); opacity: 0.8; }
+.form-section .field input { background: var(--card); border-color: transparent; }
+.form-section .field input:focus { border-color: var(--primary); }
+
+/* Modal de confirmação */
+.confirm-modal { background: var(--card); border-radius: 22px; padding: 26px 22px; margin: auto; width: calc(100% - 40px); max-width: 340px; text-align: center; animation: popIn .25s cubic-bezier(.4,0,.2,1); position: relative; margin-bottom: auto; }
+.confirm-icon { width: 66px; height: 66px; border-radius: 22px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+.confirm-icon.danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+.confirm-icon.warning { background: linear-gradient(135deg, var(--warning), #d97706); color: #fff; }
+.confirm-icon.info { background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: #fff; }
+.confirm-icon.gold { background: linear-gradient(135deg, #fbbf24, #d97706); color: #fff; }
+.confirm-modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.confirm-modal p { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 22px; white-space: pre-line; font-weight: 500; }
+.confirm-modal .modal-actions { margin-top: 0; }
+
+/* ============================================================
+   Cockpit Layout (Nova Rifa) - Mobile
+   ============================================================ */
+.cockpit-preview { display: none; }
+.cockpit-body { 
+  display: flex; flex-direction: column; gap: 16px; 
+  overflow-y: auto; flex: 1; min-height: 0; 
+  padding: 20px;
+}
+.cockpit-form { flex: 1; min-width: 0; }
+
+/* ============================================================
+   DESKTOP (>= 900px) - Layout de 2 Colunas (Cockpit)
+   ============================================================ */
+@media (min-width: 900px) {
+  
+  /* O container principal do modal AGORA É GIGANTE */
+  .cockpit-modal {
+    max-width: 1200px !important; /* Ocupa quase a tela toda */
+    width: 95% !important; 
+    height: 90vh !important; /* Altura fixa para controlar o scroll */
+    max-height: 90vh !important;
+    margin: auto !important;
+    border-radius: 24px !important;
+    padding: 0 !important; 
+    display: flex !important;
+    flex-direction: column !important;
+    background: var(--card);
+    overflow: hidden;
+  }
+
+  /* Header do modal */
+  .cockpit-modal .modal-header-custom {
+    padding: 24px 32px 16px !important;
+    margin: 0 !important;
+    flex-shrink: 0;
+  }
+
+  /* O corpo que divide as duas colunas */
+  .cockpit-body {
+    display: grid !important;
+    grid-template-columns: 400px 1fr !important; /* Preview maior (400px) e Form ocupando o resto */
+    gap: 40px !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    padding: 20px 32px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Coluna Esquerda: Preview */
+  .cockpit-preview {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    position: sticky !important;
+    top: 0 !important;
+  }
+
+  .preview-card {
+    pointer-events: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid var(--border);
+    width: 100% !important;
+  }
+
+  /* Coluna Direita: Form */
+  .cockpit-form {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Footer */
+  .cockpit-modal .modal-footer-custom {
+    padding: 16px 32px 24px !important;
+    margin: 0 !important;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+}

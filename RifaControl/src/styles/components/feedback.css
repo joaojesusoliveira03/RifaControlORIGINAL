@@ -1,0 +1,17 @@
+﻿.progress-bar{height:8px;background:var(--bg2);border-radius:8px;margin:0 0 14px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--primary));border-radius:8px;transition:width .4s ease;}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1d29;color:#fff;padding:13px 16px 13px 20px;border-radius:16px;font-size:13px;font-weight:700;opacity:0;transition:.25s;z-index:300;box-shadow:0 12px 32px rgba(0,0,0,.35);display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);pointer-events:none;}
+body.dark .toast{background:#252b3b;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+.toast .toast-msg{flex:1;}
+.toast .toast-action{background:rgba(255,255,255,.16);border:none;color:#fff;padding:6px 12px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;}
+.sort-modal{background:var(--card);width:100%;border-radius:26px 26px 0 0;padding:8px 20px calc(28px + env(safe-area-inset-bottom));animation:slideUp .3s cubic-bezier(.4,0,.2,1);text-align:center;}
+.sort-display{font-size:80px;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin:20px 0;letter-spacing:-4px;min-height:100px;display:flex;align-items:center;justify-content:center;}
+.sort-display.rolling{animation:shake .1s infinite;}
+.sort-winner{font-size:14.5px;color:var(--muted);font-weight:700;margin-bottom:14px;min-height:22px;}
+.sort-winner strong{color:var(--primary);font-size:19px;font-weight:900;}
+.sort-actions-split{display:flex;gap:10px;margin-top:10px;}
+.sort-actions-split .btn{font-size:13px;padding:13px 10px;}
+.sort-actions-split .btn-save{background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;}
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:500;overflow:hidden;}
+.confetti{position:absolute;width:10px;height:10px;top:-20px;animation:confettiFall linear forwards;}

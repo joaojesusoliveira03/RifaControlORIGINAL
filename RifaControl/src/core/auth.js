@@ -11,6 +11,11 @@ import { toast } from '../ui/components/toast.js';
 import { launchConfetti } from '../ui/components/confetti.js';
 import { updateSidebarUser } from '../ui/components/sidebar.js';
 
+// Views modulares
+import { getLoginViewHTML } from '../ui/screens/auth/login.view.js';
+import { getForgotViewHTML } from '../ui/screens/auth/forgot.view.js';
+import { getResetViewHTML } from '../ui/screens/auth/reset.view.js';
+
 /* ------------------------------------------------------------
    Helpers de tela auth
    ------------------------------------------------------------ */
@@ -268,6 +273,13 @@ export function setSyncStatus(status, text) {
    ------------------------------------------------------------ */
 
 export async function initAuth() {
+  // 1. Injeta os HTMLs das views de autenticação no container
+  const cardContainer = document.getElementById('auth-card-container');
+  if (cardContainer) {
+    cardContainer.innerHTML = getLoginViewHTML() + getForgotViewHTML() + getResetViewHTML();
+  }
+
+  // 2. Continua o fluxo normal
   const { data: { session } } = await sb.auth.getSession();
 
   if (session && session.user) {

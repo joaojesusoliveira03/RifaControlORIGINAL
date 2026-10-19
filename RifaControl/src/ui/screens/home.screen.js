@@ -14,19 +14,36 @@ import { openRifa } from './rifa.screen.js';
 import { toast } from '../components/toast.js';
 
 /* ------------------------------------------------------------
-   Greeting
+   Greeting / subtítulo / data
    ------------------------------------------------------------ */
 function updateGreeting() {
-  const h = new Date().getHours();
-  let g = 'Boa tarde! 🌤️';
-  if (h < 12) g = 'Bom dia! ☀️';
-  else if (h >= 18) g = 'Boa noite! 🌙';
-  const el = document.getElementById('home-greeting');
-  if (el) el.textContent = g;
+  const now = new Date();
+
+  const subtitle = document.getElementById('hero-subtitle');
+  if (subtitle) {
+    const total = APP.rifas.length;
+    if (total === 0) {
+      subtitle.textContent = 'Pronto pra criar sua primeira rifa? 🎟️';
+    } else if (total === 1) {
+      subtitle.textContent = 'Você tem 1 rifa ativa 🎯';
+    } else {
+      subtitle.textContent = `Você tem ${total} rifas ativas 🎯`;
+    }
+  }
+
+  const dateEl = document.getElementById('hero-date');
+  if (dateEl) {
+    const months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+    const day = now.getDate();
+    const month = months[now.getMonth()];
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    dateEl.textContent = `${day} de ${month} • ${hh}:${mm}`;
+  }
 }
 
 /* ------------------------------------------------------------
-   Stats (arrecadado, pendente)
+   Stats
    ------------------------------------------------------------ */
 function renderStats() {
   let arrecadado = 0, pendente = 0, vendidos = 0;
@@ -41,23 +58,44 @@ function renderStats() {
   if (!el) return;
 
   el.innerHTML = `
-    <div class="stat-card">
-      <div class="stat-head">
-        <div class="stat-label">Arrecadado</div>
-        <div class="stat-icon money">💰</div>
-      </div>
-      <div class="stat-value">${formatBRL(arrecadado)}</div>
-      <div class="stat-sub">${vendidos} números vendidos</div>
+    <div class="hero-stat">
+      <div class="hero-stat-label">Arrecadado</div>
+      <div class="hero-stat-value">${formatBRL(arrecadado)}</div>
+      <div class="hero-stat-sub">${vendidos} números vendidos</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-head">
-        <div class="stat-label">Pendente</div>
-        <div class="stat-icon pending">⏳</div>
-      </div>
-      <div class="stat-value">${formatBRL(pendente)}</div>
-      <div class="stat-sub">${APP.rifas.length} rifa${APP.rifas.length !== 1 ? 's' : ''}</div>
+    <div class="hero-stat">
+      <div class="hero-stat-label">Pendente</div>
+      <div class="hero-stat-value">${formatBRL(pendente)}</div>
+      <div class="hero-stat-sub">${APP.rifas.length} rifa${APP.rifas.length !== 1 ? 's' : ''}</div>
     </div>
   `;
+}
+
+/* ------------------------------------------------------------
+   Banner: aplica o fundo só quando a imagem carregar
+   ------------------------------------------------------------ */
+let bannerTried = false;
+
+function applyBannerBackground() {
+  if (bannerTried) return;
+  bannerTried = true;
+
+  const el = document.getElementById('hero-banner-bg');
+  if (!el) return;
+
+  const url = 'assets/brand/banner.png';
+  const img = new Image();
+
+  img.onload = () => {
+    el.style.backgroundImage = `url('${url}')`;
+    el.classList.add('loaded');
+  };
+
+  img.onerror = () => {
+    console.warn('⚠️ Banner não encontrado em:', url);
+  };
+
+  img.src = url;
 }
 
 /* ------------------------------------------------------------
@@ -96,10 +134,13 @@ function createRifaCard(r) {
   if (arrecadado > 0) meta += `<span class="mini-badge success">💰 ${formatBRL(arrecadado)}</span>`;
   if (pendente > 0) meta += `<span class="mini-badge warn">⏳ ${formatBRL(pendente)}</span>`;
 
+  // Ícone do swipe: lixeira (dono) ou sair (compartilhada)
+  const swipeIcon = r.isShared
+    ? `<svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>`
+    : `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
+
   wrap.innerHTML = `
-    <div class="swipe-bg">
-      <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-    </div>
+    <div class="swipe-bg">${swipeIcon}</div>
     <div class="rifa-card" style="--card-color:${c2}">
       ${winnerHtml}${sharedBadge}${imageHtml}
       <div class="card-body">
@@ -178,7 +219,7 @@ function renderSearchResults(q) {
 
     const container = document.createElement('div');
     container.innerHTML = results.compradores.slice(0, 30).map(x => {
-      const color = '#00b894'; // fallback simples
+      const color = '#00b894';
       return `<div class="search-result-item" data-action="buyer" data-name="${escapeHtml(x.sale.name)}" data-rifa="${x.rifa.id}" style="background:var(--card);border-radius:16px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid var(--border);">
         <div class="avatar" style="width:40px;height:40px;font-size:16px;background:${color};">${(x.sale.name[0] || '?').toUpperCase()}</div>
         <div style="flex:1;min-width:0;">
@@ -207,6 +248,7 @@ function renderSearchResults(q) {
 export function renderHome() {
   updateGreeting();
   renderStats();
+  applyBannerBackground();
 
   const c = document.getElementById('home-rifas');
   if (!c) return;
@@ -249,7 +291,7 @@ export function renderHome() {
 }
 
 /* ------------------------------------------------------------
-   Busca (listener) — chamado pelo main.js no boot
+   Busca (listener)
    ------------------------------------------------------------ */
 export function initSearchInput() {
   const input = document.getElementById('search-input');
