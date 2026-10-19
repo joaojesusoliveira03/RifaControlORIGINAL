@@ -2,27 +2,27 @@
   "name": "RifaControl",
   "short_name": "Rifas",
   "description": "Controle suas rifas com sincronização em tempo real",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#00b894",
   "theme_color": "#00b894",
-  "scope": "/",
+  "scope": "./",
   "icons": [
     {
-      "src": "assets/brand/logo.png",
+      "src": "./assets/brand/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/brand/logo.png",
+      "src": "./assets/brand/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/brand/logo.png",
+      "src": "./assets/brand/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

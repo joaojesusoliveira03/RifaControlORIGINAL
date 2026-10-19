@@ -12,11 +12,11 @@
 <meta name="format-detection" content="telephone=no">
 <meta name="description" content="Controle suas rifas com sincronização em tempo real">
 
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" type="image/png" href="assets/brand/logo.png">
-<link rel="apple-touch-icon" href="assets/brand/logo.png">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./assets/brand/logo.png">
+<link rel="apple-touch-icon" href="./assets/brand/logo.png">
 
-<link rel="stylesheet" href="src/styles/main.css">
+<link rel="stylesheet" href="./src/styles/main.css">
 
 <title>RifaControl 🎟️</title>
 </head>
@@ -26,11 +26,11 @@
      AUTH SCREEN
      ============================================================ -->
 <div class="auth-screen" id="auth-screen">
-  <div class="auth-bg" style="background-image: url('assets/brand/login-bg.jpg');"></div>
+  <div class="auth-bg" style="background-image: url('./assets/brand/login-bg.jpg');"></div>
   <div class="auth-overlay"></div>
   <div class="auth-container">
     <div class="auth-brand">
-      <img src="assets/brand/logo.png" alt="RifaControl" class="auth-brand-logo">
+      <img src="./assets/brand/logo.png" alt="RifaControl" class="auth-brand-logo">
       <h1 class="auth-brand-title">RifaControl</h1>
       <p class="auth-brand-sub">Suas rifas na nuvem, compartilhadas</p>
     </div>
@@ -59,11 +59,11 @@
 <div class="toast" id="toast"></div>
 <div class="confetti-container" id="confetti-container"></div>
 
-<script type="module" src="src/main.js"></script>
+<script type="module" src="./src/main.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   }
 </script>

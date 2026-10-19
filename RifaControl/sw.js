@@ -1,16 +1,16 @@
-const CACHE_NAME = 'rifacontrol-v5';
+const CACHE_NAME = 'rifacontrol-v6'; // v6 = força atualização do cache
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/src/styles/main.css',      // <-- Atualizado
-  '/src/styles/desktop.css',   // <-- Atualizado
-  '/assets/brand/logo.png',
-  '/assets/brand/banner.png',
-  '/src/main.js',
-  '/src/config/supabase.js',
-  '/src/config/state.js',
-  '/src/config/constants.js'
+  './',
+  './index.html',
+  './manifest.json',
+  './src/styles/main.css',
+  './src/styles/desktop.css',
+  './assets/brand/logo.png',
+  './assets/brand/banner.png',
+  './src/main.js',
+  './src/config/supabase.js',
+  './src/config/state.js',
+  './src/config/constants.js'
 ];
 
 self.addEventListener('install', (event) => {
