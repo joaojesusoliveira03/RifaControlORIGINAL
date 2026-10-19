@@ -66,6 +66,6 @@ export function getScreensHTML() {
     ${getReportsViewHTML()}
     ${getSettingsViewHTML()}
     ${getBuyerViewHTML()}
-    $\{getProfileViewHTML()\}
+    ${getProfileViewHTML()}
   `;
 }
