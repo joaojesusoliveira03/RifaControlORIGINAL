@@ -1,5 +1,5 @@
 ﻿/* ============================================================
-   Rifa (Números, Compradores e Info)
+   Rifa (Números, Compradores e Info) - MOBILE FIRST
    ============================================================ */
 
 /* --- Filtros --- */
@@ -19,96 +19,211 @@
 .qc-item.total .qc-value{color:var(--primary);}
 .qc-divider{width:1px;height:22px;background:var(--border);flex-shrink:0;}
 
-/* --- Grid de Números --- */
-.numbers-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:16px;}
-.num-cell{aspect-ratio:1;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;background:var(--card);color:var(--muted);border:2px solid var(--border);cursor:pointer;transition:.12s;position:relative;font-family:inherit;}
-.num-cell.paid{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border-color:transparent;}
-.num-cell.pending{background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;border-color:transparent;}
-.num-cell.winner{background:linear-gradient(135deg,#f59e0b,#d97706) !important;color:#fff !important;border-color:transparent !important;box-shadow:0 0 0 2px rgba(245,158,11,.3);}
-.num-cell.winner::after{content:'🏆';position:absolute;top:-6px;right:-6px;font-size:13px;}
-.num-cell:active{transform:scale(.9);}
-.num-cell.hidden-filter{display:none;}
+/* ============================================================
+   NÚMEROS — Nova Tela (num-)
+   ============================================================ */
 
-/* --- Chips dos Compradores (Novo Visual) --- */
-.buyer-nums-chips {
-  display: flex;
-  flex-wrap: wrap;
+/* --- Topbar de Estatísticas --- */
+.num-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
 }
 
-.buyer-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px; /* Garante que números de 1 ou 2 dígitos fiquem redondos */
-  height: 44px;
-  padding: 0 12px;
-  border-radius: 12px;
-  font-size: 14px;
+.num-stat {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.num-stat-value {
+  font-size: 22px;
   font-weight: 900;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: .15s;
-  font-family: inherit;
-  position: relative;
-  flex-shrink: 0; /* IMPEDE QUE O CHIP SEJA ESMAGADO */
+  letter-spacing: -.5px;
+  line-height: 1;
 }
 
-.buyer-chip.paid {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #fff;
+.num-stat-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
 }
 
-.buyer-chip.pending {
-  background: linear-gradient(135deg, var(--warning), #d97706);
-  color: #fff;
-}
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-muted   { color: var(--muted); }
+.text-primary { color: var(--primary); }
 
-.buyer-chip.winner::after {
-  content: '🏆';
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  font-size: 14px;
-}
-
-/* --- Botões de Ação do Comprador (Consertados) --- */
-.buyer-actions-row {
+/* --- Filtros --- */
+.num-filters-bar {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-
-.buyer-action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: none;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.num-filter-btn {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  font-family: inherit;
-  background: var(--bg2);
-  color: var(--text);
-  transition: .15s;
+  white-space: nowrap;
+  transition: background .15s, color .15s, border-color .15s;
 }
 
-.buyer-action-btn.primary {
-  background: rgba(0, 184, 148, 0.1);
+.num-filter-btn:hover {
+  border-color: var(--primary);
   color: var(--primary);
 }
 
-.buyer-action-btn svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-  flex-shrink: 0;
+.num-filter-btn.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
 }
+
+/* --- Barra de Progresso --- */
+.num-progress-container {
+  margin-bottom: 20px;
+}
+
+.num-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.num-progress-track {
+  height: 8px;
+  background: var(--bg2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.num-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  border-radius: 8px;
+  transition: width .6s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* --- Banner do Ganhador --- */
+.num-winner-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, .3);
+}
+
+.nwb-icon { font-size: 28px; }
+.nwb-info { flex: 1; }
+.nwb-title { font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; opacity: 0.9; }
+.nwb-name { font-size: 15px; font-weight: 800; }
+.nwb-date { font-size: 11px; font-weight: 600; opacity: 0.9; }
+
+/* --- Grid de Números (Mobile) --- */
+.num-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 colunas no celular */
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.num-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  transition: .15s ease;
+  font-family: inherit;
+  position: relative;
+}
+
+.num-cell:hover {
+  transform: translateY(-2px);
+  border-color: var(--muted);
+}
+
+.num-cell.paid {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border-color: transparent;
+}
+
+.num-cell.pending {
+  background: linear-gradient(135deg, var(--warning), #d97706);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Ganhador Pulsante */
+.num-cell.winner {
+  background: linear-gradient(135deg, #fbbf24, #d97706) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  z-index: 2;
+  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  animation: pulse-gold 2s infinite;
+}
+
+.num-cell.winner::after {
+  content: '🏆';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 14px;
+}
+
+@keyframes pulse-gold {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+.num-cell.hidden-filter {
+  display: none;
+}
+
+/* --- Chips dos Compradores --- */
+.buyer-nums-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.buyer-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; height: 44px; padding: 0 12px; border-radius: 12px; font-size: 14px; font-weight: 900; border: 2px solid transparent; cursor: pointer; transition: .15s; font-family: inherit; position: relative; flex-shrink: 0; }
+.buyer-chip.paid { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; }
+.buyer-chip.pending { background: linear-gradient(135deg, var(--warning), #d97706); color: #fff; }
+.buyer-chip.winner::after { content: '🏆'; position: absolute; top: -8px; right: -8px; font-size: 14px; }
+
+/* --- Botões de Ação do Comprador --- */
+.buyer-actions-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.buyer-action-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 12px; border-radius: 10px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; background: var(--bg2); color: var(--text); transition: .15s; }
+.buyer-action-btn.primary { background: rgba(0, 184, 148, 0.1); color: var(--primary); }
+.buyer-action-btn svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
 
 /* --- Promoções e Cálculos --- */
 .promo-box{background:linear-gradient(135deg,rgba(253,203,110,.15),rgba(245,158,11,.08));border:2px solid rgba(245,158,11,.3);border-radius:16px;padding:14px;margin-bottom:14px;transition:.2s;}

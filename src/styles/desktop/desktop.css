@@ -547,10 +547,13 @@
   .hero-stat-label { font-size: 10.5px; }
   .hero-stat-sub { font-size: 11px; }
 
+  /* CORRIGIDO: Removido max-width: 1400px para ocupar toda a tela */
   .content {
     padding: 28px 32px 40px;
     overscroll-behavior: contain;
-    max-width: 1400px;
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
   }
 
   .content.with-stats {
@@ -561,9 +564,10 @@
     display: none !important;
   }
 
+  /* CORRIGIDO: Grid adaptável */
   #home-rifas {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 16px;
   }
 
@@ -637,21 +641,10 @@
     display: none;
   }
 
-  .numbers-grid {
-    grid-template-columns: repeat(10, 1fr);
-    gap: 8px;
-    max-width: 900px;
-  }
-
-  .num-cell {
-    border-radius: 10px;
-    font-size: 13px;
-  }
-
   .tabs {
     padding: 20px 32px 4px;
     gap: 8px;
-    max-width: 600px;
+    max-width: 100%;
   }
 
   .tab {
@@ -683,10 +676,10 @@
   }
 }
 
+/* Ajustes para telas gigantes (4K, ultrawide) */
 @media (min-width: 1400px) {
   .sidebar { width: 280px; }
-  #home-rifas { grid-template-columns: repeat(3, 1fr); }
-  .numbers-grid { grid-template-columns: repeat(12, 1fr); }
+  #home-rifas { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
 }
 
 @media (max-width: 899px) {
@@ -709,7 +702,7 @@
 /* ============================================================
    RELATÓRIOS
    ============================================================ */
-#report-content { display: block; max-width: 1200px; }
+#report-content { display: block; max-width: 100%; }
 .report-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
 .report-kpi { background: var(--card); border-radius: 16px; padding: 14px; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; position: relative; overflow: hidden; min-height: 80px; min-width: 0; }
 .report-kpi::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary); }
@@ -765,12 +758,12 @@ body.dark .rrc-stat.warn    { background: #3a2e0a; color: #fbbf24; }
   .report-kpis { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
   .report-kpi { padding: 18px; gap: 14px; min-height: 90px; }
   .kpi-icon { font-size: 30px; } .kpi-value { font-size: 22px; } .kpi-label { font-size: 11px; } .kpi-sub { font-size: 11px; }
-  .report-rifa-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; }
+  .report-rifa-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
   .report-rifa-card { padding: 16px; } .rrc-color { width: 54px; height: 54px; font-size: 26px; } .rrc-title h4 { font-size: 15px; } .rrc-value strong { font-size: 17px; }
   .report-detail-header { padding: 26px 30px; } .rdh-emoji { font-size: 48px; } .rdh-info h2 { font-size: 22px; }
 }
 @media (min-width: 1400px) {
-  .report-rifa-list { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+  .report-rifa-list { grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); }
 }
 
 /* ============================================================
@@ -1170,298 +1163,4 @@ body.dark .status-partial { background: #422006; color: #fcd34d; }
     min-width: auto;
     padding: 10px 16px;
   }
-/* ============================================================
-   NÚMEROS — Nova Tela (num-)
-   ============================================================ */
-
-/* --- Topbar de Estatísticas --- */
-.num-stats-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px;
-}
-
-.num-stat {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.num-stat-value {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: -.5px;
-  line-height: 1;
-}
-
-.num-stat-label {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-}
-
-.text-success { color: var(--success); }
-.text-warning { color: var(--warning); }
-.text-muted   { color: var(--muted); }
-.text-primary { color: var(--primary); }
-
-/* --- Filtros --- */
-.num-filters-bar {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-
-.num-filter-btn {
-  padding: 8px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background .15s, color .15s, border-color .15s;
-}
-
-.num-filter-btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.num-filter-btn.active {
-  background: var(--primary);
-  color: #fff;
-  border-color: var(--primary);
-}
-
-/* --- Barra de Progresso --- */
-.num-progress-container {
-  margin-bottom: 20px;
-}
-
-.num-progress-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
-.num-progress-track {
-  height: 8px;
-  background: var(--bg2);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.num-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--primary));
-  border-radius: 8px;
-  transition: width .6s cubic-bezier(.4, 0, .2, 1);
-}
-
-/* --- Banner do Ganhador --- */
-.num-winner-banner {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: linear-gradient(135deg, #fbbf24, #d97706);
-  color: #fff;
-  padding: 14px 18px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px rgba(245, 158, 11, .3);
-}
-
-.nwb-icon {
-  font-size: 28px;
-}
-
-.nwb-info {
-  flex: 1;
-}
-
-.nwb-title {
-  font-size: 10px;
-  text-transform: uppercase;
-  font-weight: 800;
-  letter-spacing: 1px;
-  opacity: 0.9;
-}
-
-.nwb-name {
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.nwb-date {
-  font-size: 11px;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
-/* --- Grid de Números --- */
-.num-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-bottom: 30px;
-}
-
-.num-cell {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 800;
-  border-radius: 12px;
-  border: 2px solid var(--border);
-  background: var(--card);
-  color: var(--muted);
-  cursor: pointer;
-  transition: .15s ease;
-  font-family: inherit;
-  position: relative;
-}
-
-.num-cell:hover {
-  transform: translateY(-2px);
-  border-color: var(--muted);
-}
-
-.num-cell.paid {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #fff;
-  border-color: transparent;
-}
-
-.num-cell.pending {
-  background: linear-gradient(135deg, var(--warning), #d97706);
-  color: #fff;
-  border-color: transparent;
-}
-
-/* Ganhador Pulsante */
-.num-cell.winner {
-  background: linear-gradient(135deg, #fbbf24, #d97706) !important;
-  color: #fff !important;
-  border-color: transparent !important;
-  z-index: 2;
-  box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
-  animation: pulse-gold 2s infinite;
-}
-
-.num-cell.winner::after {
-  content: '🏆';
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  font-size: 14px;
-}
-
-@keyframes pulse-gold {
-  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-}
-
-.num-cell.hidden-filter {
-  display: none;
-}
-
-/* --- Desktop --- */
-@media (min-width: 900px) {
-  /* Aumenta a largura máxima dos elementos para preencher a tela */
-  .num-stats-bar,
-  .num-filters-bar,
-  .num-progress-container,
-  .num-winner-banner {
-    max-width: 100%; /* Ocupa toda a largura disponível */
-  }
-
-  .num-stats-bar {
-    padding: 24px 32px;
-    gap: 24px;
-  }
-
-  .num-stat-value { 
-    font-size: 32px; 
-  }
-  
-  .num-stat-label { 
-    font-size: 12px; 
-  }
-
-  .num-filters-bar {
-    gap: 10px;
-    margin-top: 24px;
-  }
-
-  .num-filter-btn {
-    padding: 12px 22px;
-    font-size: 14px;
-    border-radius: 14px;
-  }
-
-  .num-progress-container {
-    margin-top: 24px;
-    margin-bottom: 32px;
-  }
-
-  .num-progress-header {
-    font-size: 13px;
-  }
-
-  .num-progress-track {
-    height: 10px; /* Barra um pouco mais grossa no desktop */
-  }
-
-  .num-winner-banner {
-    padding: 18px 24px;
-    margin-bottom: 32px;
-  }
-
-  .nwb-icon { font-size: 36px; }
-  .nwb-name { font-size: 18px; }
-  .nwb-title { font-size: 11px; }
-  .nwb-date { font-size: 12px; }
-
-  /* O Grid de números agora se adapta ao tamanho da tela */
-  .num-grid {
-    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-    gap: 12px;
-    max-width: 100%; /* Remove a limitação de 900px */
-  }
-
-  .num-cell {
-    font-size: 18px;
-    border-radius: 16px;
-    aspect-ratio: 1;
-  }
-}
-
-@media (min-width: 1400px) {
-  /* Em telas muito grandes, os botões podem ficar um pouco maiores */
-  .num-grid {
-    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-  }
-  .num-cell {
-    font-size: 20px;
-  }
-}
 }
