@@ -5,9 +5,6 @@
 import { sb } from '../config/supabase.js';
 import { APP } from '../config/state.js';
 
-/* ------------------------------------------------------------
-   Mapper: linha do Supabase → objeto do app
-   ------------------------------------------------------------ */
 export function mapRifa(r) {
   return {
     id: r.id,
@@ -22,12 +19,12 @@ export function mapRifa(r) {
     colorIdx: r.color_idx,
     image: r.image,
     winner: r.winner,
-    // Mantemos os campos antigos para não quebrar a tela de venda antiga
     promo_enabled: r.promo_enabled, 
     promo_quantity: r.promo_quantity,
     promo_price: parseFloat(r.promo_price) || 0,
-    // NOVO: Array de pacotes
     promos: r.promos || [], 
+    prizes: r.prizes || [],          
+    top_buyer_prize: r.top_buyer_prize || null, 
     sales: r.sales || [],
     createdAt: r.created_at,
     updatedAt: r.updated_at,
@@ -35,21 +32,13 @@ export function mapRifa(r) {
   };
 }
 
-/* ------------------------------------------------------------
-   Leitura
-   ------------------------------------------------------------ */
-
 export async function reloadRifas() {
   const { data, error } = await sb
     .from('rifas')
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('reloadRifas error:', error);
-    throw error;
-  }
-
+  if (error) throw error;
   APP.rifas = (data || []).map(mapRifa);
   return APP.rifas;
 }
@@ -57,15 +46,6 @@ export async function reloadRifas() {
 export function getRifa(id) {
   return APP.rifas.find(r => r.id === id) || null;
 }
-
-export function replaceRifaLocal(rifa) {
-  const idx = APP.rifas.findIndex(r => r.id === rifa.id);
-  if (idx >= 0) APP.rifas[idx] = rifa;
-}
-
-/* ------------------------------------------------------------
-   Escrita
-   ------------------------------------------------------------ */
 
 export async function createRifa(data) {
   const { error } = await sb.from('rifas').insert({
@@ -80,12 +60,12 @@ export async function createRifa(data) {
     color_idx: data.colorIdx,
     image: data.image,
     winner: null,
-    // Zera os campos antigos
     promo_enabled: false,
     promo_quantity: 10,
     promo_price: 10,
-    // NOVO: Salva a lista de pacotes
-    promos: data.promos || [], 
+    promos: data.promos || [],
+    prizes: data.prizes || [],
+    top_buyer_prize: data.top_buyer_prize || null,
     sales: []
   });
 
@@ -107,12 +87,12 @@ export async function saveRifaCloud(rifa) {
     image: rifa.image,
     winner: rifa.winner,
     sales: rifa.sales,
-    // Atualiza os dois formatos (para compatibilidade)
     promo_enabled: (rifa.promos && rifa.promos.length > 0),
     promo_quantity: rifa.promos && rifa.promos[0] ? rifa.promos[0].quantity : 10,
     promo_price: rifa.promos && rifa.promos[0] ? rifa.promos[0].price : 10,
-    // NOVO
-    promos: rifa.promos || [] 
+    promos: rifa.promos || [],
+    prizes: rifa.prizes || [],
+    top_buyer_prize: rifa.top_buyer_prize || null
   };
 
   const { error } = await sb
@@ -131,7 +111,8 @@ export async function deleteRifaFromCloud(id) {
 export async function persistRifa(rifa) {
   try {
     await saveRifaCloud(rifa);
-    replaceRifaLocal(rifa);
+    const idx = APP.rifas.findIndex(r => r.id === rifa.id);
+    if (idx >= 0) APP.rifas[idx] = rifa;
     return true;
   } catch (err) {
     console.error('persistRifa error:', err);

@@ -10,6 +10,7 @@ import { getEditPromoModalHTML } from './edit-promo.view.js'; // <-- NOVO IMPORT
 import { getShareModalHTML } from './share.view.js';
 import { getRandomModalHTML } from './random.view.js';
 
+
 export function getModalsHTML() {
   return `
     ${getRifaModalHTML()}

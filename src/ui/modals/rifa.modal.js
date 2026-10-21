@@ -1,5 +1,5 @@
 /* ============================================================
-   Rifa Modal — Lógica de Criação, Imagens e Promoção
+   Rifa Modal — Lógica de Criação, Imagens, Prêmios e Promoções
    ============================================================ */
 
 import { APP } from '../../config/state.js';
@@ -72,15 +72,56 @@ function renderRifaImageUploader() {
 }
 
 /* ------------------------------------------------------------
-   NOVO SISTEMA DE PACOTES PROMOCIONAIS
+   Sistema de Múltiplos Prêmios (Criação)
    ------------------------------------------------------------ */
+export function renderPrizeList() {
+  const container = document.getElementById('prizes-list-container');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  if (!APP.newRifaPrizes) APP.newRifaPrizes = [];
 
+  APP.newRifaPrizes.forEach((prize, index) => {
+    if (index === 0) return; // O 1º é o campo fixo no HTML
+
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; align-items:center; gap:8px; background:var(--card2); padding:10px; border-radius:12px; border:1px solid var(--border);';
+    
+    row.innerHTML = `
+      <span style="font-size:11px; font-weight:800; color:var(--primary); white-space:nowrap;">${index + 1}º Lugar</span>
+      <input type="text" value="${prize}" onchange="window.updatePrizeItem(${index}, this.value)" placeholder="Ex: Fone de ouvido" style="flex:1; padding:8px; border-radius:8px; border:1px solid var(--border); background:var(--card); font-weight:600; color:var(--text);">
+      <button type="button" onclick="window.removePrizeItem(${index})" style="background:none; border:none; color:var(--danger); font-size:16px; cursor:pointer;">✕</button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+export function addPrizeRow() {
+  if (!APP.newRifaPrizes) APP.newRifaPrizes = [''];
+  if (APP.newRifaPrizes.length === 0) APP.newRifaPrizes.push(''); 
+  APP.newRifaPrizes.push(''); 
+  haptic(5);
+  renderPrizeList();
+}
+
+export function removePrizeItem(index) {
+  if (index === 0) return; 
+  APP.newRifaPrizes.splice(index, 1);
+  haptic(5);
+  renderPrizeList();
+}
+
+export function updatePrizeItem(index, value) {
+  APP.newRifaPrizes[index] = value;
+}
+
+/* ------------------------------------------------------------
+   Sistema de Pacotes Promocionais (Criação)
+   ------------------------------------------------------------ */
 export function renderPromoList() {
   const container = document.getElementById('promo-list-container');
   if (!container) return;
-
   container.innerHTML = '';
-  
   if (!APP.newRifaPromos) APP.newRifaPromos = [];
 
   APP.newRifaPromos.forEach((promo, index) => {
@@ -151,7 +192,7 @@ export function updatePromoSummary() {
 }
 
 /* ------------------------------------------------------------
-   Preview e Salvar
+   Preview e Salvar (Criação)
    ------------------------------------------------------------ */
 export function updateRifaPreview() {
   const nameEl = document.getElementById('in-rifa-name');
@@ -199,7 +240,7 @@ export function updateRifaPreview() {
 export function openRifaModal() {
   haptic(8);
 
-  ['in-rifa-name', 'in-rifa-prize', 'in-rifa-price', 'in-rifa-date'].forEach(id => {
+  ['in-rifa-name', 'in-rifa-prize', 'in-rifa-price', 'in-rifa-date', 'in-rifa-top-buyer'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -212,12 +253,14 @@ export function openRifaModal() {
   APP.newRifaEmoji = '🎟️';
   APP.newRifaColor = 0;
   APP.newRifaImage = null;
-  APP.newRifaPromos = []; // Zera os pacotes
+  APP.newRifaPromos = [];
+  APP.newRifaPrizes = ['']; 
 
   renderEmojiGrid();
   renderRifaColorGrid();
   renderRifaImageUploader();
   renderPromoList();
+  renderPrizeList();
   updatePromoSummary();
   updateRifaPreview();
 
@@ -227,27 +270,32 @@ export function openRifaModal() {
 
 export async function saveRifa() {
   const name = document.getElementById('in-rifa-name').value.trim();
-  const prize = document.getElementById('in-rifa-prize').value.trim();
+  const mainPrize = document.getElementById('in-rifa-prize')?.value.trim() || 'Prêmio Principal';
   const price = parseFloat(document.getElementById('in-rifa-price').value) || 0;
   const total = parseInt(document.getElementById('in-rifa-total').value) || 0;
   const date = document.getElementById('in-rifa-date').value;
   const time = document.getElementById('in-rifa-time').value;
+  const topBuyerPrize = document.getElementById('in-rifa-top-buyer')?.value.trim() || null;
 
   if (!name) { toast('⚠️ Informe o nome'); haptic(50); return; }
   if (total <= 0) { toast('⚠️ Informe a qtd de números'); haptic(50); return; }
 
-  // Limpa pacotes inválidos
+  const finalPrizes = [mainPrize, ...APP.newRifaPrizes.slice(1).filter(p => p.trim() !== '')];
+  if (!finalPrizes[0]) finalPrizes[0] = 'Prêmio Principal';
+
   const validPromos = (APP.newRifaPromos || []).filter(p => p.quantity >= 2 && p.price > 0);
 
   setSyncStatus('syncing', 'Salvando...');
 
   try {
     await createRifa({
-      name, prize: prize || '—', price, total, date, time,
+      name, prize: finalPrizes[0], price, total, date, time,
       emoji: APP.newRifaEmoji,
       colorIdx: APP.newRifaColor,
       image: APP.newRifaImage,
-      promos: validPromos // Envia o array de pacotes
+      promos: validPromos,
+      prizes: finalPrizes, 
+      top_buyer_prize: topBuyerPrize 
     });
 
     closeModal('modal-rifa');
@@ -269,7 +317,7 @@ export async function saveRifa() {
 }
 
 /* ------------------------------------------------------------
-   Imagens
+   Imagens (Nova Rifa)
    ------------------------------------------------------------ */
 export function triggerImageUpload(ctx) {
   if (ctx === 'rifa') document.getElementById('rifa-image-input')?.click();
@@ -316,7 +364,7 @@ export function removeRifaImage() {
 }
 
 /* ------------------------------------------------------------
-   Funções Antigas de Edição (Restauradas para a tela Info)
+   Edição de Imagem (Tela Info)
    ------------------------------------------------------------ */
 export function openEditImageModal() {
   haptic(8);
@@ -381,60 +429,68 @@ export function promptEditImageUrl() {
   });
 }
 
+/* ------------------------------------------------------------
+   Edição de Múltiplos Pacotes Promocionais (Tela Info)
+   ------------------------------------------------------------ */
 export function openEditPromoModal() {
   haptic(8);
   const r = APP.currentRifa;
   if (!r) return;
 
-  const box = document.getElementById('edit-promo-box');
-  const sw = document.getElementById('edit-promo-switch');
-  
-  const qty = document.getElementById('edit-promo-qty');
-  const price = document.getElementById('edit-promo-price');
+  if (!r.promos) r.promos = [];
+  APP.editRifaPromos = JSON.parse(JSON.stringify(r.promos));
 
-  const currentPromo = r.promos && r.promos.length > 0 ? r.promos[0] : null;
-
-  if (currentPromo) {
-    if (qty) qty.value = currentPromo.quantity;
-    if (price) price.value = currentPromo.price;
-    if (box) box.classList.remove('disabled');
-    if (sw) sw.classList.add('on');
-  } else {
-    if (qty) qty.value = 10;
-    if (price) price.value = 10;
-    if (box) box.classList.add('disabled');
-    if (sw) sw.classList.remove('on');
-  }
+  renderEditPromoList();
 
   const el = document.getElementById('modal-edit-promo');
   if (el) el.classList.add('show');
 }
 
-export function toggleEditPromo() {
-  const box = document.getElementById('edit-promo-box');
-  const sw = document.getElementById('edit-promo-switch');
-  if (box) box.classList.toggle('disabled');
-  if (sw) sw.classList.toggle('on');
-  haptic(5);
+export function renderEditPromoList() {
+  const container = document.getElementById('edit-promo-list-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (!APP.editRifaPromos) APP.editRifaPromos = [];
+
+  APP.editRifaPromos.forEach((promo, index) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex; align-items:center; gap:8px; background:var(--card2); padding:10px; border-radius:12px; border:1px solid var(--border);';
+    
+    row.innerHTML = `
+      <span style="font-size:11px; font-weight:700; color:var(--muted); white-space:nowrap;">Leve</span>
+      <input type="number" min="2" value="${promo.quantity}" onchange="window.updateEditPromoItem(${index}, 'quantity', this.value)" style="width:60px; padding:8px; text-align:center; border-radius:8px; border:1px solid var(--border); background:var(--card); font-weight:800; color:var(--text);">
+      <span style="font-size:11px; font-weight:700; color:var(--muted); white-space:nowrap;">por R$</span>
+      <input type="number" min="0.01" step="0.01" value="${promo.price}" onchange="window.updateEditPromoItem(${index}, 'price', this.value)" style="width:80px; padding:8px; text-align:center; border-radius:8px; border:1px solid var(--border); background:var(--card); font-weight:800; color:var(--text);">
+      <button type="button" onclick="window.removeEditPromoItem(${index})" style="margin-left:auto; background:none; border:none; color:var(--danger); font-size:16px; cursor:pointer;">✕</button>
+    `;
+    container.appendChild(row);
+  });
 }
 
-export function updateEditPromoSummary() {
-  // Função vazia apenas para não dar erro de referência no HTML
+export function addEditPromoRow() {
+  if (!APP.editRifaPromos) APP.editRifaPromos = [];
+  APP.editRifaPromos.push({ quantity: 3, price: 10 });
+  haptic(5);
+  renderEditPromoList();
+}
+
+export function removeEditPromoItem(index) {
+  APP.editRifaPromos.splice(index, 1);
+  haptic(5);
+  renderEditPromoList();
+}
+
+export function updateEditPromoItem(index, field, value) {
+  APP.editRifaPromos[index][field] = parseFloat(value) || 0;
 }
 
 export async function saveEditPromo() {
   const r = APP.currentRifa;
   if (!r) return;
 
-  const qty = parseInt(document.getElementById('edit-promo-qty')?.value) || 0;
-  const price = parseFloat(document.getElementById('edit-promo-price')?.value) || 0;
-  const isEnabled = document.getElementById('edit-promo-switch')?.classList.contains('on');
-
-  if (isEnabled && qty >= 2 && price > 0) {
-    r.promos = [{ quantity: qty, price: price }];
-  } else {
-    r.promos = [];
-  }
+  const validPromos = (APP.editRifaPromos || []).filter(p => p.quantity >= 2 && p.price > 0);
+  r.promos = validPromos;
 
   try {
     const { saveRifaCloud } = await import('../../services/rifas.service.js');
@@ -443,9 +499,14 @@ export async function saveEditPromo() {
     import('../components/modal.js').then(m => m.closeModal('modal-edit-promo'));
     const { renderRifa } = await import('../screens/rifa.screen.js');
     renderRifa();
-    toast('✅ Promoção atualizada!');
+    toast('✅ Promoções atualizadas!');
     haptic([10, 30, 10]);
   } catch (err) {
+    console.error(err);
     toast('❌ Erro ao salvar');
   }
 }
+
+// Compatibilidade
+export function toggleEditPromo() { haptic(5); }
+export function updateEditPromoSummary() {}

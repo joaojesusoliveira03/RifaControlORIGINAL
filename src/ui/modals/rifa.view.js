@@ -5,16 +5,13 @@ export function getRifaModalHTML() {
         
         <div class="modal-handle"></div>
         
-        <!-- HEADER FIXO -->
         <div class="modal-header-custom">
           <h2><span class="emo">🎟️</span>Nova Rifa</h2>
           <button class="icon-btn close-btn" onclick="closeModal('modal-rifa')">✕</button>
         </div>
 
-        <!-- BODY ROLÁVEL -->
         <div class="cockpit-body">
           
-          <!-- PREVIEW (ESQUERDA) -->
           <div class="cockpit-preview">
             <div class="preview-label">Preview</div>
             <div class="rifa-card preview-card" id="preview-card">
@@ -36,7 +33,6 @@ export function getRifaModalHTML() {
             <p class="preview-hint">É assim que sua rifa vai aparecer na tela inicial.</p>
           </div>
 
-          <!-- FORMULÁRIO (DIREITA) -->
           <div class="cockpit-form">
             <div class="form-section">
               <div class="form-section-title">Informações Básicas</div>
@@ -45,9 +41,24 @@ export function getRifaModalHTML() {
                 <input id="in-rifa-name" placeholder="Ex: Rifa do Bem" maxlength="40" oninput="updateRifaPreview()">
               </div>
               <div class="field">
-                <label>Prêmio</label>
+                <label>Prêmio Principal (1º Lugar)</label>
                 <input id="in-rifa-prize" placeholder="Ex: Cesta básica" maxlength="60" oninput="updateRifaPreview()">
               </div>
+              
+              <div class="form-section-title" style="margin-top:16px;">Outros Prêmios (Opcional)</div>
+              <div id="prizes-list-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                <!-- Lista de Prêmios inserida via JS -->
+              </div>
+              <button class="btn btn-ghost" type="button" style="width:100%; border:2px dashed var(--border); font-size:12px;" onclick="window.addPrizeRow()">
+                ➕ Adicionar Prêmio (2º, 3º lugar...)
+              </button>
+
+              <div class="field" style="margin-top:16px;">
+                <label>👑 Prêmio do Top Comprador (opcional)</label>
+                <input id="in-rifa-top-buyer" placeholder="Ex: R$ 50,00 ou Brinde" maxlength="60">
+                <p class="field-hint">Quem comprar mais números ganha esse prêmio extra!</p>
+              </div>
+
               <div class="field">
                 <label>Imagem do prêmio (opcional)</label>
                 <div class="image-uploader" id="rifa-image-uploader" onclick="triggerImageUpload('rifa')">
@@ -75,7 +86,6 @@ export function getRifaModalHTML() {
                 </div>
               </div>
               
-              <!-- NOVO SISTEMA DE PROMOÇÕES -->
               <div class="promo-box" style="background:transparent; border:none; padding:0; margin-top:20px;">
                 <div class="promo-header" style="margin-bottom:12px;">
                   <div class="promo-header-left">
@@ -88,7 +98,7 @@ export function getRifaModalHTML() {
                 </div>
                 
                 <div id="promo-list-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
-                  <!-- Os pacotes inseridos aqui via JS -->
+                  <!-- Pacotes inseridos aqui -->
                 </div>
                 
                 <button class="btn btn-ghost" type="button" style="width:100%; border:2px dashed var(--border); font-size:12px;" onclick="window.addPromoRow()">
@@ -126,7 +136,6 @@ export function getRifaModalHTML() {
           </div>
         </div>
 
-        <!-- FOOTER FIXO -->
         <div class="modal-footer-custom">
           <button class="btn btn-ghost" onclick="closeModal('modal-rifa')">Cancelar</button>
           <button class="btn btn-primary" onclick="saveRifa()">Criar Rifa</button>

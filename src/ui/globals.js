@@ -45,7 +45,7 @@ import * as ReportsScreen from './screens/reports.screen.js';
 import * as SettingsScreen from './screens/settings.screen.js';
 import * as BuyerScreen from './screens/buyer.screen.js';
 import * as NumInfo from './screens/num-info.screen.js';
-import * as ProfileScreen from './screens/profile/profile.screen.js'; // <-- Adicionado
+import * as ProfileScreen from './screens/profile/profile.screen.js';
 
 /* ------------------------------------------------------------
    Modals
@@ -80,50 +80,51 @@ Object.assign(window, {
   calcSaleCost, calcArrecadado, calcPendente,
 
   // ---------- Screens ----------
-  // Home
   renderHome: HomeScreen.renderHome, clearSearch: HomeScreen.clearSearch, initSearchInput: HomeScreen.initSearchInput,
-  
-  // Rifa
   openRifa: RifaScreen.openRifa, renderRifa: RifaScreen.renderRifa, switchTabRifa: RifaScreen.switchTabRifa,
   deleteRifa: RifaScreen.deleteRifa, leaveRifa: RifaScreen.leaveRifa, showNumInfo: RifaScreen.showNumInfo,
-  
-  // Sorteio
   renderSorteioList: SortScreen.renderSorteioList, startSort: SortScreen.startSort,
   rollAgain: SortScreen.rollAgain, saveSortWinner: SortScreen.saveSortWinner, closeSortModal: SortScreen.closeSortModal,
-  
-  // Reports
   renderReports: ReportsScreen.renderReports, closeRifaReport: ReportsScreen.closeRifaReport,
-  
-  // Settings
   renderSettings: SettingsScreen.renderSettings, manualSync: SettingsScreen.manualSync, exportData: SettingsScreen.exportData,
-  
-  // Buyer
   openBuyer: BuyerScreen.openBuyer, closeBuyer: BuyerScreen.closeBuyer,
-  
-  // Num Info
   goToBuyerFromNum: NumInfo.goToBuyerFromNum,
-
-  // Profile (Novo)
   renderProfile: ProfileScreen.renderProfile, saveProfile: ProfileScreen.saveProfile, 
   sendPasswordReset: ProfileScreen.sendPasswordReset, confirmLogout: ProfileScreen.confirmLogout,
 
-  // ---------- Rifa Modal ----------
+  // ---------- Rifa Modal (Criação) ----------
   openRifaModal: RifaModal.openRifaModal, saveRifa: RifaModal.saveRifa,
   updatePromoSummary: RifaModal.updatePromoSummary, updateRifaPreview: RifaModal.updateRifaPreview,
   triggerImageUpload: RifaModal.triggerImageUpload, handleImageUpload: RifaModal.handleImageUpload,
   promptImageUrl: RifaModal.promptImageUrl, removeRifaImage: RifaModal.removeRifaImage,
   
-  // Edições (Restauradas)
-  openEditImageModal: RifaModal.openEditImageModal, removeEditImage: RifaModal.removeEditImage,
-  handleEditImageUpload: RifaModal.handleEditImageUpload, promptEditImageUrl: RifaModal.promptEditImageUrl,
-  openEditPromoModal: RifaModal.openEditPromoModal, toggleEditPromo: RifaModal.toggleEditPromo,
-  updateEditPromoSummary: RifaModal.updateEditPromoSummary, saveEditPromo: RifaModal.saveEditPromo,
+  // NOVO: Múltiplos Prêmios (Criação)
+  addPrizeRow: RifaModal.addPrizeRow,
+  removePrizeItem: RifaModal.removePrizeItem,
+  updatePrizeItem: RifaModal.updatePrizeItem,
+  renderPrizeList: RifaModal.renderPrizeList,
 
-  // Novas Funções de Pacotes Promocionais
+  // NOVO: Pacotes Promocionais (Criação)
   addPromoRow: RifaModal.addPromoRow,
   removePromoItem: RifaModal.removePromoItem,
   updatePromoItem: RifaModal.updatePromoItem,
   renderPromoList: RifaModal.renderPromoList,
+
+  // Edições (Restauradas)
+  openEditImageModal: RifaModal.openEditImageModal, removeEditImage: RifaModal.removeEditImage,
+  handleEditImageUpload: RifaModal.handleEditImageUpload, promptEditImageUrl: RifaModal.promptEditImageUrl,
+  
+  // NOVO: Edição de Múltiplos Pacotes Promocionais (Tela Info)
+  openEditPromoModal: RifaModal.openEditPromoModal,
+  addEditPromoRow: RifaModal.addEditPromoRow,
+  removeEditPromoItem: RifaModal.removeEditPromoItem,
+  updateEditPromoItem: RifaModal.updateEditPromoItem,
+  renderEditPromoList: RifaModal.renderEditPromoList,
+  saveEditPromo: RifaModal.saveEditPromo,
+  
+  // Compatibilidade
+  toggleEditPromo: RifaModal.toggleEditPromo,
+  updateEditPromoSummary: RifaModal.updateEditPromoSummary,
 
   // ---------- Sale Modal ----------
   openSaleModal: SaleModal.openSaleModal, saveSale: SaleModal.saveSale, selectPay: SaleModal.selectPay,
