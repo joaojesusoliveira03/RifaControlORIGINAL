@@ -22,9 +22,12 @@ export function mapRifa(r) {
     colorIdx: r.color_idx,
     image: r.image,
     winner: r.winner,
-    promo_enabled: r.promo_enabled,
+    // Mantemos os campos antigos para não quebrar a tela de venda antiga
+    promo_enabled: r.promo_enabled, 
     promo_quantity: r.promo_quantity,
     promo_price: parseFloat(r.promo_price) || 0,
+    // NOVO: Array de pacotes
+    promos: r.promos || [], 
     sales: r.sales || [],
     createdAt: r.created_at,
     updatedAt: r.updated_at,
@@ -36,10 +39,6 @@ export function mapRifa(r) {
    Leitura
    ------------------------------------------------------------ */
 
-/**
- * Recarrega todas as rifas do servidor e atualiza APP.rifas.
- * Retorna a lista.
- */
 export async function reloadRifas() {
   const { data, error } = await sb
     .from('rifas')
@@ -55,16 +54,10 @@ export async function reloadRifas() {
   return APP.rifas;
 }
 
-/**
- * Busca uma rifa localmente pelo id.
- */
 export function getRifa(id) {
   return APP.rifas.find(r => r.id === id) || null;
 }
 
-/**
- * Substitui uma rifa em APP.rifas pela versão atualizada (in-place).
- */
 export function replaceRifaLocal(rifa) {
   const idx = APP.rifas.findIndex(r => r.id === rifa.id);
   if (idx >= 0) APP.rifas[idx] = rifa;
@@ -74,10 +67,6 @@ export function replaceRifaLocal(rifa) {
    Escrita
    ------------------------------------------------------------ */
 
-/**
- * Cria uma nova rifa.
- * @param {object} data - { name, prize, price, total, date, time, emoji, colorIdx, image, promo_enabled, promo_quantity, promo_price }
- */
 export async function createRifa(data) {
   const { error } = await sb.from('rifas').insert({
     owner_id: APP.user.id,
@@ -91,18 +80,18 @@ export async function createRifa(data) {
     color_idx: data.colorIdx,
     image: data.image,
     winner: null,
-    promo_enabled: data.promo_enabled || false,
-    promo_quantity: data.promo_quantity || 10,
-    promo_price: data.promo_price || 10,
+    // Zera os campos antigos
+    promo_enabled: false,
+    promo_quantity: 10,
+    promo_price: 10,
+    // NOVO: Salva a lista de pacotes
+    promos: data.promos || [], 
     sales: []
   });
 
   if (error) throw error;
 }
 
-/**
- * Atualiza uma rifa existente (todos os campos).
- */
 export async function saveRifaCloud(rifa) {
   if (!rifa) return;
 
@@ -118,9 +107,12 @@ export async function saveRifaCloud(rifa) {
     image: rifa.image,
     winner: rifa.winner,
     sales: rifa.sales,
-    promo_enabled: rifa.promo_enabled,
-    promo_quantity: rifa.promo_quantity,
-    promo_price: rifa.promo_price
+    // Atualiza os dois formatos (para compatibilidade)
+    promo_enabled: (rifa.promos && rifa.promos.length > 0),
+    promo_quantity: rifa.promos && rifa.promos[0] ? rifa.promos[0].quantity : 10,
+    promo_price: rifa.promos && rifa.promos[0] ? rifa.promos[0].price : 10,
+    // NOVO
+    promos: rifa.promos || [] 
   };
 
   const { error } = await sb
@@ -131,22 +123,11 @@ export async function saveRifaCloud(rifa) {
   if (error) throw error;
 }
 
-/**
- * Exclui uma rifa.
- */
 export async function deleteRifaFromCloud(id) {
   const { error } = await sb.from('rifas').delete().eq('id', id);
   if (error) throw error;
 }
 
-/* ------------------------------------------------------------
-   Sincronização "amigável" com estado global
-   ------------------------------------------------------------ */
-
-/**
- * Atualiza uma rifa localmente E no servidor, e reflete em APP.rifas.
- * Retorna true se salvou, false se deu erro.
- */
 export async function persistRifa(rifa) {
   try {
     await saveRifaCloud(rifa);

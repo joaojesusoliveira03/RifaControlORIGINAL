@@ -66,35 +66,35 @@ export function getRifaModalHTML() {
               <div class="form-section-title">Valores e Quantidade</div>
               <div class="field-row">
                 <div class="field">
-                  <label>Preço (R$)</label>
-                  <input id="in-rifa-price" type="number" step="0.01" min="0" placeholder="1.50" inputmode="decimal" oninput="updatePromoSummary(); updateRifaPreview();">
+                  <label>Preço Unitário (R$)</label>
+                  <input id="in-rifa-price" type="number" step="0.01" min="0" placeholder="1.50" inputmode="decimal" oninput="updateRifaPreview(); window.updatePromoSummary();">
                 </div>
                 <div class="field">
                   <label>Qtd. números</label>
                   <input id="in-rifa-total" type="number" min="1" value="100" inputmode="numeric" oninput="updateRifaPreview()">
                 </div>
               </div>
-              <div class="promo-box disabled" id="promo-box">
-                <div class="promo-header">
+              
+              <!-- NOVO SISTEMA DE PROMOÇÕES -->
+              <div class="promo-box" style="background:transparent; border:none; padding:0; margin-top:20px;">
+                <div class="promo-header" style="margin-bottom:12px;">
                   <div class="promo-header-left">
                     <div class="promo-icon">🎁</div>
                     <div>
-                      <div class="promo-title">Ativar promoção</div>
-                      <div class="promo-subtitle">Desconto por quantidade</div>
+                      <div class="promo-title">Promoções por Pacote</div>
+                      <div class="promo-subtitle">Adicione ofertas (ex: Leve 3 por R$ 25)</div>
                     </div>
                   </div>
-                  <div class="switch small" id="promo-switch" onclick="togglePromo(); updateRifaPreview();"></div>
                 </div>
-                <div class="promo-content">
-                  <div class="promo-row">
-                    <span class="promo-row-label">Leve</span>
-                    <input type="number" id="promo-qty" min="2" value="10" inputmode="numeric" oninput="updatePromoSummary(); updateRifaPreview();">
-                    <span class="promo-row-label">por apenas</span>
-                    <span class="promo-row-label">R$</span>
-                    <input type="number" id="promo-price" min="0.01" step="0.01" value="10" class="money" inputmode="decimal" oninput="updatePromoSummary(); updateRifaPreview();">
-                  </div>
-                  <div class="promo-summary" id="promo-summary"></div>
+                
+                <div id="promo-list-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                  <!-- Os pacotes inseridos aqui via JS -->
                 </div>
+                
+                <button class="btn btn-ghost" type="button" style="width:100%; border:2px dashed var(--border); font-size:12px;" onclick="window.addPromoRow()">
+                  ➕ Adicionar Pacote Promocional
+                </button>
+                <div class="promo-summary" id="promo-summary" style="display:none;"></div>
               </div>
             </div>
 

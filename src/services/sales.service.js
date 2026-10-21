@@ -2,66 +2,71 @@
    Sales Service — cálculos de venda, arrecadação, pagamentos
    ============================================================ */
 
-/**
- * Calcula o custo total de uma venda considerando promoção.
- * Retorna as faixas aplicadas, total, economia e flags.
- */
 export function calcSaleCost(totalNums, rifa) {
-  if (!rifa || !rifa.promo_enabled || !rifa.promo_quantity || !rifa.promo_price) {
+  const price = rifa?.price || 0;
+  const promos = rifa?.promos || [];
+
+  // Se não tem promoção, cobra o valor cheio
+  if (!rifa || !promos || promos.length === 0) {
     return {
-      total: totalNums * rifa.price,
-      faixas: [{ qty: totalNums, unitPrice: rifa.price, subtotal: totalNums * rifa.price }],
+      total: totalNums * price,
+      faixas: [{ qty: totalNums, unitPrice: price, subtotal: totalNums * price, isPromo: false }],
       savings: 0,
       promoApplied: false,
-      semPromo: totalNums * rifa.price
+      semPromo: totalNums * price
     };
   }
 
-  const promoQty = rifa.promo_quantity;
-  const promoPrice = rifa.promo_price;
-  const unitPrice = rifa.price;
+  // Algoritmo guloso: pega os pacotes que dão o maior desconto por cota primeiro
+  const sortedPromos = [...promos].sort((a, b) => {
+    const unitA = a.price / a.quantity;
+    const unitB = b.price / b.quantity;
+    return unitA - unitB;
+  });
 
-  const promoBundles = Math.floor(totalNums / promoQty);
-  const remainder = totalNums % promoQty;
-
-  const faixas = [];
+  let remaining = totalNums;
   let total = 0;
+  const faixas = [];
 
-  if (promoBundles > 0) {
-    const sub = promoBundles * promoPrice;
-    faixas.push({
-      qty: promoBundles * promoQty,
-      unitPrice: promoPrice / promoQty,
-      subtotal: sub,
-      isPromo: true
-    });
-    total += sub;
+  for (const promo of sortedPromos) {
+    if (remaining >= promo.quantity) {
+      const qtyPacks = Math.floor(remaining / promo.quantity);
+      const qtyNums = qtyPacks * promo.quantity;
+      const subtotal = qtyPacks * promo.price;
+      
+      faixas.push({
+        qty: qtyNums,
+        unitPrice: promo.price / promo.quantity,
+        subtotal: subtotal,
+        isPromo: true
+      });
+      
+      total += subtotal;
+      remaining -= qtyNums;
+    }
   }
 
-  if (remainder > 0) {
-    const sub = remainder * unitPrice;
+  if (remaining > 0) {
+    const subtotal = remaining * price;
     faixas.push({
-      qty: remainder,
-      unitPrice,
-      subtotal: sub,
+      qty: remaining,
+      unitPrice: price,
+      subtotal: subtotal,
       isPromo: false
     });
-    total += sub;
+    total += subtotal;
   }
 
-  const semPromo = totalNums * unitPrice;
+  const semPromo = totalNums * price;
   return {
     total,
     faixas,
     savings: semPromo - total,
-    promoApplied: promoBundles > 0,
+    promoApplied: total < semPromo,
     semPromo
   };
 }
 
-/**
- * Retorna o valor efetivamente arrecadado (somente pagos).
- */
 export function calcArrecadado(rifa) {
   if (!rifa) return 0;
   let total = 0;
@@ -72,9 +77,6 @@ export function calcArrecadado(rifa) {
   return total;
 }
 
-/**
- * Retorna o valor pendente (vendas não pagas).
- */
 export function calcPendente(rifa) {
   if (!rifa) return 0;
   let total = 0;
@@ -85,63 +87,39 @@ export function calcPendente(rifa) {
   return total;
 }
 
-/**
- * Retorna o valor total (pago + pendente).
- */
 export function calcTotal(rifa) {
   return calcArrecadado(rifa) + calcPendente(rifa);
 }
 
-/**
- * Conta quantos números únicos foram vendidos.
- */
 export function countSold(rifa) {
   if (!rifa) return 0;
   return new Set(rifa.sales.map(s => s.num)).size;
 }
 
-/**
- * Conta quantos números únicos estão pagos.
- */
 export function countPaid(rifa) {
   if (!rifa) return 0;
   return new Set(rifa.sales.filter(s => s.paid).map(s => s.num)).size;
 }
 
-/**
- * Conta quantos números estão pendentes (vendidos mas não pagos).
- */
 export function countPending(rifa) {
   return countSold(rifa) - countPaid(rifa);
 }
 
-/**
- * Conta quantos números estão livres.
- */
 export function countAvailable(rifa) {
   if (!rifa) return 0;
   return rifa.total - countSold(rifa);
 }
 
-/**
- * Retorna set de números vendidos.
- */
 export function getSoldNumbers(rifa) {
   if (!rifa) return new Set();
   return new Set(rifa.sales.map(s => s.num));
 }
 
-/**
- * Retorna set de números pagos.
- */
 export function getPaidNumbers(rifa) {
   if (!rifa) return new Set();
   return new Set(rifa.sales.filter(s => s.paid).map(s => s.num));
 }
 
-/**
- * Retorna array de números disponíveis (não vendidos).
- */
 export function getAvailableNumbers(rifa) {
   if (!rifa) return [];
   const sold = getSoldNumbers(rifa);
@@ -152,10 +130,6 @@ export function getAvailableNumbers(rifa) {
   return available;
 }
 
-/**
- * Marca todas as vendas de um comprador como pagas (in-place).
- * Retorna quantas foram alteradas.
- */
 export function markAllPaidFor(rifa, buyerName) {
   if (!rifa) return 0;
   let count = 0;
@@ -168,10 +142,6 @@ export function markAllPaidFor(rifa, buyerName) {
   return count;
 }
 
-/**
- * Agrupa vendas por comprador.
- * Retorna { [name]: { name, phone, sales: [], totalPaid, totalPending, valuePaid, valuePending, hasWinner } }
- */
 export function groupSalesByBuyer(rifa) {
   if (!rifa) return {};
   const grouped = {};
@@ -200,15 +170,11 @@ export function groupSalesByBuyer(rifa) {
     if (rifa.winner && rifa.winner.num === s.num) g.hasWinner = true;
   });
 
-  // Ordena números dentro de cada comprador
   Object.values(grouped).forEach(g => g.sales.sort((a, b) => a.num - b.num));
 
   return grouped;
 }
 
-/**
- * Gera os dados completos de um comprador (pra tela buyer).
- */
 export function buildBuyerData(rifa, buyerName) {
   if (!rifa) return null;
   const sales = rifa.sales.filter(s => s.name === buyerName);

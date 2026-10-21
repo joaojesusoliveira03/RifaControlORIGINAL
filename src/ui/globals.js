@@ -1,5 +1,5 @@
 ﻿/* ============================================================
-   Globals â€” ponte entre mÃ³dulos e o HTML (onclick="...")
+   Globals — ponte entre módulos e o HTML (onclick="...")
    ============================================================ */
 
 // Utils
@@ -45,6 +45,7 @@ import * as ReportsScreen from './screens/reports.screen.js';
 import * as SettingsScreen from './screens/settings.screen.js';
 import * as BuyerScreen from './screens/buyer.screen.js';
 import * as NumInfo from './screens/num-info.screen.js';
+import * as ProfileScreen from './screens/profile/profile.screen.js'; // <-- Adicionado
 
 /* ------------------------------------------------------------
    Modals
@@ -57,7 +58,7 @@ import * as ShareModal from './modals/share.modal.js';
 import * as Marketing from './modals/marketing.modal.js';
 
 /* ------------------------------------------------------------
-   ExposiÃ§Ã£o global
+   Exposição global
    ------------------------------------------------------------ */
 Object.assign(window, {
   // ---------- Utils ----------
@@ -102,15 +103,27 @@ Object.assign(window, {
   // Num Info
   goToBuyerFromNum: NumInfo.goToBuyerFromNum,
 
+  // Profile (Novo)
+  renderProfile: ProfileScreen.renderProfile, saveProfile: ProfileScreen.saveProfile, 
+  sendPasswordReset: ProfileScreen.sendPasswordReset, confirmLogout: ProfileScreen.confirmLogout,
+
   // ---------- Rifa Modal ----------
-  openRifaModal: RifaModal.openRifaModal, saveRifa: RifaModal.saveRifa, togglePromo: RifaModal.togglePromo,
+  openRifaModal: RifaModal.openRifaModal, saveRifa: RifaModal.saveRifa,
   updatePromoSummary: RifaModal.updatePromoSummary, updateRifaPreview: RifaModal.updateRifaPreview,
   triggerImageUpload: RifaModal.triggerImageUpload, handleImageUpload: RifaModal.handleImageUpload,
   promptImageUrl: RifaModal.promptImageUrl, removeRifaImage: RifaModal.removeRifaImage,
+  
+  // Edições (Restauradas)
   openEditImageModal: RifaModal.openEditImageModal, removeEditImage: RifaModal.removeEditImage,
   handleEditImageUpload: RifaModal.handleEditImageUpload, promptEditImageUrl: RifaModal.promptEditImageUrl,
   openEditPromoModal: RifaModal.openEditPromoModal, toggleEditPromo: RifaModal.toggleEditPromo,
   updateEditPromoSummary: RifaModal.updateEditPromoSummary, saveEditPromo: RifaModal.saveEditPromo,
+
+  // Novas Funções de Pacotes Promocionais
+  addPromoRow: RifaModal.addPromoRow,
+  removePromoItem: RifaModal.removePromoItem,
+  updatePromoItem: RifaModal.updatePromoItem,
+  renderPromoList: RifaModal.renderPromoList,
 
   // ---------- Sale Modal ----------
   openSaleModal: SaleModal.openSaleModal, saveSale: SaleModal.saveSale, selectPay: SaleModal.selectPay,

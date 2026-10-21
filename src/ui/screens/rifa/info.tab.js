@@ -38,16 +38,28 @@ export function renderInfoTab(c, r) {
     </div>
   ` : '';
 
-  const promoHtml = r.promo_enabled ? (() => {
-    const unitPromo = r.promo_price / r.promo_quantity;
-    const saving = r.price - unitPromo;
-    const pctPromo = r.price > 0 ? Math.round((saving / r.price) * 100) : 0;
+  // NOVO: Lê o array de pacotes de promoção
+  const promoHtml = (r.promos && r.promos.length > 0) ? (() => {
+    let promoText = '';
+    r.promos.forEach(p => {
+      const unitPromo = p.price / p.quantity;
+      const saving = r.price - unitPromo;
+      const pctPromo = r.price > 0 ? Math.round((saving / r.price) * 100) : 0;
+      
+      promoText += `
+        <div class="promo-line" style="margin-bottom:6px;">
+          <strong>Leve ${p.quantity}</strong> por <strong>${formatBRL(p.price)}</strong> 
+          <span class="promo-pct">-${pctPromo}%</span>
+        </div>
+        <div class="promo-sub" style="margin-bottom:12px; font-size:11px;">Cada cota sai por ${formatBRL(unitPromo)}</div>
+      `;
+    });
+
     return `
       <div class="info-card info-promo">
-        <div class="info-card-label">🎁 Promoção ativa</div>
+        <div class="info-card-label">🎁 Promoções ativas</div>
         <div class="promo-detail">
-          <div class="promo-line"><strong>Leve ${r.promo_quantity}</strong> por <strong>${formatBRL(r.promo_price)}</strong></div>
-          <div class="promo-sub">Cada número sai por ${formatBRL(unitPromo)} <span class="promo-pct">-${pctPromo}%</span></div>
+          ${promoText}
         </div>
       </div>
     `;
@@ -164,7 +176,7 @@ export function renderInfoTab(c, r) {
         <div class="info-actions-grid">
           <button class="info-action ghost" onclick="openEditPromoModal()">
             <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>
-            <span>${r.promo_enabled ? 'Editar promoção' : 'Adicionar promoção'}</span>
+            <span>${(r.promos && r.promos.length > 0) ? 'Editar promoções' : 'Adicionar promoção'}</span>
           </button>
         </div>
         
